@@ -259,7 +259,7 @@ class PlainTasksConvertToHtml(PlainTasksBase):
         if ask:
             window = sublime.active_window()
             nv = window.new_file()
-            nv.set_syntax_file('Packages/HTML/HTML.tmLanguage')
+            nv.set_syntax_file('Packages/HTML/HTML.sublime-syntax')
             nv.set_name(title + '.html')
             nv.insert(edit, 0, html)
             window.run_command('close_file')
