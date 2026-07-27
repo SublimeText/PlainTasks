@@ -1,24 +1,31 @@
-## [PlainTasks](https://github.com/aziz/PlainTasks) 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8d42f3e49d104ab8bf663392661b183b)](https://www.codacy.com/app/allen-bargi/PlainTasks?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aziz/PlainTasks&amp;utm_campaign=Badge_Grade)
+## PlainTasks
 
-An opinionated todo-list plugin for Sublime Text (2 & 3) editor
-![](http://cl.ly/image/1q100Q212o2Q/ss.png)
+An opinionated todo-list plugin for Sublime Text.
+
 
 ## Installation
-To install this plugin, you have two options:
 
-1. If you have Package Control installed, simply search for `PlainTasks` to install.
+The easiest way to install is using [Package Control](https://packagecontrol.io). It's listed as `PlainTasks`.
 
-2. Clone source code to Sublime Text packages folder.
+1. Open `Command Palette` using <kbd>ctrl+shift+P</kbd> or menu item `Tools → Command Palette...`
+2. Choose `Package Control: Install Package`
+3. Find `PlainTasks` and hit <kbd>Enter</kbd>
+
 
 ## Start a new todo-list
-Bring up the command palette (it’s <kbd>⌘ + shift + p</kbd> in OS X and <kbd>ctrl + shift + p</kbd> in Windows) and type `task` and select `Tasks: New document` command. 
 
-**NOTE:** Save your todo files with `todo`, `todolist`, `tasks` or `taskpaper` file extensions or just name them `TODO` with no extension.
-For more portability you can use `todolist.txt` either as a filename or as suffix for any arbitrary filename.
+Bring up the command palette (it’s <kbd>⌘ + shift + p</kbd> in OS X and <kbd>ctrl + shift + p</kbd> in Windows) and type `task` and select `Tasks: New document` command.
+
+> [!NOTE]
+>
+> Save your todo files with `todo`, `todolist`, `tasks` or `taskpaper` file extensions or just name them `TODO` with no extension.
+> For more portability you can use `todolist.txt` either as a filename or as suffix for any arbitrary filename.
 
 ## Usage
-**NOTE:** In Windows or Linux use <kbd>ctrl</kbd> instead of <kbd>⌘</kbd>
+
+> [!NOTE]
+>
+> In Windows or Linux use <kbd>ctrl</kbd> instead of <kbd>⌘</kbd>
 
 ☐ <kbd>⌘ + enter</kbd> or <kbd>⌘ + i</kbd>: new task
 
@@ -32,7 +39,7 @@ For more portability you can use `todolist.txt` either as a filename or as suffi
 
 ☐ <kbd>⌘ + shift + u</kbd> will open the url under the cursor in your default browser, other than http(s) schemes must be enclosed within `<>`, e.g. `<skype:nickname>`
 
-☐ Anything with colon at the end of the line is a project title, you can also nest projects by indenting them. 
+☐ Anything with colon at the end of the line is a project title, you can also nest projects by indenting them.
 
 ☐ You can write plain text as notes or descriptions wherever you want. Use `_` or `*` for italic and bold just like in Markdown.
 
@@ -46,7 +53,7 @@ pending tasks with selected tags will remain visible (and their notes and projec
 
 `--` and then <kbd>tab</kbd> will give you this: `--- ✄ -----------------------`
 
-☐ Completion rules (<kbd>ctrl+space</kbd> or <kbd>alt+/</kbd> to see list of them):  
+☐ Completion rules (<kbd>ctrl+space</kbd> or <kbd>alt+/</kbd> to see list of them):
 
 - type `t`, press <kbd>tab</kbd> — it’ll become `@today` — this one is highlighted differently than other tags;
 - `c`, <kbd>tab</kbd> — `@critical`;
@@ -93,7 +100,7 @@ pending tasks with selected tags will remain visible (and their notes and projec
          </tr>
         </table>
 
-    - relative period of time starts with a plus sign or two  
+    - relative period of time starts with a plus sign or two
       __`+[+][number][DdWw][h:m]`__ — number is optional as well as letter `d` for days or letter `w` for weeks.
 
         <table>
@@ -155,17 +162,19 @@ pending tasks with selected tags will remain visible (and their notes and projec
 ☐ To convert current document to HTML, bring up the command palette <kbd>⌘ + shift + p</kbd> and type `Tasks: View as HTML` — it will be opened in default webbrowser, so you can view and save it.  
 `Tasks: Save as HTML…` ask if you want to save and if yes, allow to choose directory and filename (but won’t open it in webbrowser).
 
+
 ### Editor Useful Tools:
 
 ☐ Use **<kbd>⌘ + control + up/down</kbd>** (**<kbd>ctrl + shift + up/down</kbd>** on Windows) to move tasks up and down.
 
 ☐ Use **<kbd>⌘ + r</kbd>** to see a list of projects and quickly jump between them
 
+★ See the [Tutorial](https://github.com/SublimeText/PlainTasks/blob/master/messages/Tutorial.todo) for more detailed information.
 
-★ See the [Tutorial](https://github.com/aziz/PlainTasks/blob/master/messages/Tutorial.todo) for more detailed information.
 
 ## Settings
-PlainTasks is an opinionated plugin, which means that it is highly configured to look in a specific way, but this does not mean that you can not customize it. If you feel that something does not look right and you want to change it, you can easily do it in your user settings file. 
+
+PlainTasks is an opinionated plugin, which means that it is highly configured to look in a specific way, but this does not mean that you can not customize it. If you feel that something does not look right and you want to change it, you can easily do it in your user settings file.
 
 Go to `Preferences → Package Settings → PlainTasks` and open `Settings - User`, there you can override all the default settings, to get an idea you can take a look at `Settings - Default`.
 
@@ -207,8 +216,10 @@ Here is a list of PlainTasks’ specific settings:
 <b>¹</b> Icon value can be  `"dot"`, `"circle"`, `"bookmark"`, `"cross"`, `""`, or custom relative path to existing png file,
 e.g. `"Packages/User/my-icon.png"`.
 
+
 ### Changing color scheme
-If you don't like colors used in bundled schemes just copy any `.hidden-tmTheme` from PlainTasks to 
+
+If you don't like colors used in bundled schemes just copy any `.hidden-tmTheme` from PlainTasks to
 your User directory, change colors and paste the code below in your user settings file:
 
 ``` json
@@ -217,11 +228,13 @@ your User directory, change colors and paste the code below in your user setting
 
 **N.B.**, sometimes you have to restart Sublime Text to apply changes made in tmTheme file.
 
-**N.B.**, `scope_past_due`, `scope_due_soon`, and `scope_misformatted` settings can assign any scopes defined in tmTheme file, e.g. 
+**N.B.**, `scope_past_due`, `scope_due_soon`, and `scope_misformatted` settings can assign any scopes defined in tmTheme file, e.g.
 you can set `"scope_past_due": "my.own.super.expired.whatever"` and then just add style definition in tmTheme for this scope.
 
+
 ### Taskpaper Compatibility
-If you need to keep your files compatible with Taskpaper, go to 
+
+If you need to keep your files compatible with Taskpaper, go to
 `Preferences → Package Settings → PlainTasks` and open `Settings - User`, then
 add these settings to the json file:
 
@@ -233,8 +246,10 @@ add these settings to the json file:
 }
 ```
 
+
 ### Spell check
-It is build-in feature of Sublime, you can toggle spell check with <kbd>F6</kbd>.  
+
+It is build-in feature of Sublime, you can toggle spell check with <kbd>F6</kbd>.
 For convinience, you may add bullets in list of ignored words into **`Preferences → Settings - User`**, e.g.
 
 ```json
@@ -243,12 +258,14 @@ For convinience, you may add bullets in list of ignored words into **`Preference
 }
 ```
 
-## [BONUS] Custom todo icon
+
+## Custom todo icon
+
 PlainTasks comes with a custom todo icon that you can find in the `icons` folder. You can assign it to your todo files to give them a better look and distinguish them from other plain text files. Google and find out how to assign a custom icon to a file type in your operating system.
 
-![](http://f.cl.ly/items/2t312B30121l2X1l0927/todo-icon.png)
 
-## [BONUS] Custom Statistics
+## Custom Statistics
+
 Statistics of current file are represented in status-bar, based on `stats_format`, which is `"$n/$a done ($percent%) $progress Last task @done $last"` by default — as you can see it’s just a string containing special directives (see table bellow) and regular chars.
 
 | Directive    | Description                                           |
@@ -274,10 +291,14 @@ So you can customise it as you like, by adding to `Settings - User`, e.g.
 }
 ```
 
+
 ### Copy statistics
+
 Bring up the command palette and type `Tasks: Copy Statistics`.
 
+
 ### Additional settings for progress bar
+
 ```
 {
     "bar_full": "■",   // any char
@@ -289,10 +310,9 @@ Bring up the command palette and type `Tasks: Copy Statistics`.
 }
 ```
 
-## Introduction to PlainTasks Screencast
-[![](http://i46.tinypic.com/9ggbd3.png)](https://www.youtube.com/watch?v=LsfGhjRVJwk)
 
 ## PlainTasks for other editors
+
 NOTE: These are separate projects, maintained by some awesome developers other than us.
 - [Atom: Tasks plugin](https://atom.io/packages/tasks)
 - [Vim: Plaintasks.vim](https://github.com/elentok/plaintasks.vim)
@@ -301,7 +321,9 @@ NOTE: These are separate projects, maintained by some awesome developers other t
 
 
 ## Contributors
+
 - @antonioriva
+- [aziz](https://github.com/aziz)
 - @binaryannie
 - [Ben Johnson](https://github.com/benjohnson)
 - [Craig Campbell](https://github.com/ccampbell)
@@ -315,10 +337,11 @@ NOTE: These are separate projects, maintained by some awesome developers other t
 - [Stanislav Parfeniuk](https://github.com/travmik)
 - [Vova Kolobok](https://github.com/vovkkk)
 
-You can contribute on [github](https://github.com/aziz/PlainTasks)
+You can contribute on [GitHub](https://github.com/SublimeText/PlainTasks)
 
 
 ## Inspiration
-- Thanks to Chagel for the [iTodo plugin](https://github.com/chagel/itodo).  
+
+- Thanks to Chagel for the [iTodo plugin](https://github.com/chagel/itodo).
 - Thanks to [Taskmate for TextMate](https://github.com/svenfuchs/taskmate).
 - Thanks to [TaskPaper Mac application from hogbaysoftware.com](http://www.hogbaysoftware.com/products/taskpaper)
