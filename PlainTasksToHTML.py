@@ -1,13 +1,11 @@
 import os
 import re
 import tempfile
-import webbrowser
 
 from html import escape as html_escape
 
 import sublime
 
-from .plist_parser import parse_file
 from .PlainTasks import PlainTasksBase
 
 
@@ -81,7 +79,26 @@ def convert_tmtheme_to_css(theme_file):
     if not theme_file:
         return default_ccsl
 
-    theme_as_dict = parse_file(theme_file)
+    if not theme_file.endswith(('.tmTheme', '.hidden-tmTheme')):
+        return default_ccsl
+
+    theme_xml = sublime.load_binary_resource(theme_file)
+    if not theme_xml:
+        return default_ccsl
+
+    try:
+        import plistlib
+        if hasattr(plistlib, 'loads'):
+            # python 3.14
+            theme_as_dict = plistlib.loads(theme_xml.decode('utf-8'))
+        else:
+            # python 3.3
+            theme_as_dict = plistlib.readPlistFromBytes(theme_xml)
+    except Exception:
+        import traceback
+        traceback.print_exc()
+        return default_ccsl
+
     cssl = []
 
     # make default color pink, easy to see in case of bugs
@@ -253,12 +270,12 @@ class PlainTasksConvertToHtml(PlainTasksBase):
         tmp_html = tempfile.NamedTemporaryFile(delete=False, suffix='.html')
         tmp_html.write(html.encode('utf-8'))
         tmp_html.close()
+        import webbrowser
         webbrowser.open_new_tab("file://%s" % tmp_html.name)
 
     def produce_html_from_template(self, title, html_doc):
         html_lines = []
-        ppath = sublime.packages_path()
-        tmtheme = os.path.join(ppath, self.view.settings().get('color_scheme').replace('Packages/', '', 1))
+        tmtheme = self.view.settings().get('color_scheme')
         css = '\n'.join(convert_tmtheme_to_css(tmtheme))
         template = sublime.load_resource('Packages/PlainTasks/templates/template.html')
         for line in template.splitlines():
