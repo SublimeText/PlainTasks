@@ -322,6 +322,3 @@ You can contribute on [github](https://github.com/aziz/PlainTasks)
 - Thanks to Chagel for the [iTodo plugin](https://github.com/chagel/itodo).  
 - Thanks to [Taskmate for TextMate](https://github.com/svenfuchs/taskmate).
 - Thanks to [TaskPaper Mac application from hogbaysoftware.com](http://www.hogbaysoftware.com/products/taskpaper)
-
-## License
-Copyright 2012-2013 [Allen Bargi](https://twitter.com/aziz). Licensed under the MIT License
