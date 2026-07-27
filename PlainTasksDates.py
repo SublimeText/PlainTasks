@@ -1,34 +1,27 @@
-# coding: utf-8
-import sublime, sublime_plugin
-import json
-import re
-import locale
 import calendar
 import itertools
+import json
+import locale
+import re
 from datetime import datetime
 from datetime import timedelta
 
-NT = sublime.platform() == 'windows'
-ST3 = int(sublime.version()) >= 3000
-if ST3:
-    from .APlainTasksCommon import PlainTasksBase, PlainTasksEnabled, PlainTasksFold
-    MARK_SOON = sublime.DRAW_NO_FILL
-    MARK_INVALID = sublime.DRAW_NO_FILL | sublime.DRAW_NO_OUTLINE | sublime.DRAW_SQUIGGLY_UNDERLINE
-else:
-    from APlainTasksCommon import PlainTasksBase, PlainTasksEnabled, PlainTasksFold
-    MARK_SOON = MARK_INVALID = 0
-    sublime_plugin.ViewEventListener = object
+import sublime
+import sublime_plugin
 
+from .APlainTasksCommon import PlainTasksBase, PlainTasksEnabled, PlainTasksFold
 
 try:  # unavailable dependencies shall not break basic functionality
     from dateutil import parser as dateutil_parser
     from dateutil.relativedelta import relativedelta
-except:
+except ImportError:
     dateutil_parser = None
 
+locale.setlocale(locale.LC_ALL, '')
 
-if ST3:
-    locale.setlocale(locale.LC_ALL, '')
+MARK_SOON = sublime.DRAW_NO_FILL
+MARK_INVALID = sublime.DRAW_NO_FILL | sublime.DRAW_NO_OUTLINE | sublime.DRAW_SQUIGGLY_UNDERLINE
+NT = sublime.platform() == 'windows'
 
 
 def is_yearfirst(date_format):
@@ -40,7 +33,7 @@ def is_dayfirst(date_format):
 
 
 def _convert_date(matchstr, now):
-    match_obj = re.search(r'''(?mxu)
+    match_obj = re.search(r'''(?mx)
         (?:\s*
          (?P<yearORmonthORday>\d*(?!:))
          (?P<sep>[-\.])?
@@ -107,7 +100,7 @@ def increase_date(view, region, text, now, date_format):
     if '++' in text:
         line = view.line(region)
         line_content = view.substr(line)
-        created = re.search(r'(?mxu)@created\(([\d\w,\.:\-\/ @]*)\)', line_content)
+        created = re.search(r'(?mx)@created\(([\d\w,\.:\-\/ @]*)\)', line_content)
         if created:
             created_date, error = parse_date(created.group(1),
                                              date_format=date_format,
@@ -116,12 +109,12 @@ def increase_date(view, region, text, now, date_format):
                                              default=now)
             if error:
                 ln = (view.rowcol(line.a)[0] + 1)
-                print(u'\nPlainTasks:\nError at line %d\n\t%s\ncaused by text:\n\t"%s"\n' % (ln, error, created.group(0)))
-                sublime.status_message(u'@created date is invalid at line %d, see console for details' % ln)
+                print('\nPlainTasks:\nError at line %d\n\t%s\ncaused by text:\n\t"%s"\n' % (ln, error, created.group(0)))
+                sublime.status_message('@created date is invalid at line %d, see console for details' % ln)
             else:
                 now = created_date
 
-    match_obj = re.search(r'''(?mxu)
+    match_obj = re.search(r'''(?mx)
         \s*\+\+?\s*
         (?:
          (?P<number>\d*(?![:.]))\s*
@@ -221,7 +214,7 @@ def format_delta(view, delta):
     delta -= timedelta(microseconds=delta.microseconds)
     if view.settings().get('decimal_minutes', False):
         days = delta.days
-        delta = u'%s%s%s%s' % (days or '', ' day, ' if days == 1 else '', ' days, ' if days > 1 else '', '%.2f' % (delta.seconds / 3600.0) if delta.seconds else '')
+        delta = '%s%s%s%s' % (days or '', ' day, ' if days == 1 else '', ' days, ' if days > 1 else '', '%.2f' % (delta.seconds / 3600.0) if delta.seconds else '')
     else:
         delta = str(delta)
     if delta[~7:] == ' 0:00:00' or delta == '0:00:00':  # strip meaningless time
@@ -244,8 +237,7 @@ class PlainTasksToggleHighlightPastDue(PlainTasksEnabled):
         dates_strings = []
         dates_regions = self.view.find_all(pattern, 0, '\\1', dates_strings)
         if not dates_regions:
-            if ST3:
-                self.view.settings().set('plain_tasks_remain_time_phantoms', [])
+            self.view.settings().set('plain_tasks_remain_time_phantoms', [])
             return
 
         past_due, due_soon, misformatted, phantoms = self.group_due_tags(dates_strings, dates_regions)
@@ -260,8 +252,6 @@ class PlainTasksToggleHighlightPastDue(PlainTasksEnabled):
         self.view.add_regions('due_soon', due_soon, scope_due_soon, icon_due_soon, MARK_SOON)
         self.view.add_regions('misformatted', misformatted, scope_misformatted, icon_misformatted, MARK_INVALID)
 
-        if not ST3:
-            return
         if self.view.settings().get('show_remain_due', False):
             self.view.settings().set('plain_tasks_remain_time_phantoms', phantoms)
         else:

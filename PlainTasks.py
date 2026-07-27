@@ -1,55 +1,16 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-import sublime, sublime_plugin
+import itertools
 import os
 import re
-import webbrowser
-import itertools
 import threading
-from datetime import datetime, tzinfo, timedelta
 import time
+import webbrowser
 
-platform = sublime.platform()
-ST3 = int(sublime.version()) >= 3000
+from datetime import datetime, timezone
 
-if ST3:
-    from .APlainTasksCommon import PlainTasksBase, PlainTasksFold, get_all_projects_and_separators
-else:
-    from APlainTasksCommon import PlainTasksBase, PlainTasksFold, get_all_projects_and_separators
-    sublime_plugin.ViewEventListener = object
+import sublime
+import sublime_plugin
 
-# io is not operable in ST2 on Linux, but in all other cases io is better
-# https://github.com/SublimeTextIssues/Core/issues/254
-if not ST3 and platform == 'linux':
-    import codecs as io
-else:
-    import io
-
-NT = platform == 'windows'
-if NT:
-    import subprocess
-
-if ST3:
-    from datetime import timezone
-else:
-    class timezone(tzinfo):
-        __slots__ = ("_offset", "_name")
-
-        def __init__(self, offset, name=None):
-            if not isinstance(offset, timedelta):
-                raise TypeError("offset must be a timedelta")
-            self._offset = offset
-            self._name = name
-
-        def utcoffset(self, dt):
-            return self._offset
-
-        def tzname(self, dt):
-            return self._name
-
-        def dst(self, dt):
-            return timedelta(0)
+from .APlainTasksCommon import PlainTasksBase, PlainTasksFold, get_all_projects_and_separators
 
 
 def tznow():
@@ -533,8 +494,7 @@ class PlainTasksNewTaskDocCommand(sublime_plugin.WindowCommand):
     def run(self):
         view = self.window.new_file()
         view.settings().add_on_change('color_scheme', lambda: self.set_proper_scheme(view))
-        view.set_syntax_file('Packages/PlainTasks/PlainTasks.sublime-syntax' if ST3 else
-                             'Packages/PlainTasks/PlainTasks.tmLanguage')
+        view.set_syntax_file('Packages/PlainTasks/PlainTasks.sublime-syntax')
 
     def set_proper_scheme(self, view):
         if view.id() != sublime.active_window().active_view().id():
@@ -562,12 +522,7 @@ class PlainTasksOpenUrlCommand(sublime_plugin.TextCommand):
             # optional select URL
             self.view.sel().add(rgn)
             url = self.view.substr(rgn)
-            if NT and all([ST3, ':' in url]):
-                # webbrowser uses os.startfile() under the hood, and it is not reliable in py3;
-                # thus call start command for url with scheme (eg skype:nick) and full path (eg c:\b)
-                subprocess.Popen(['start', url], shell=True)
-            else:
-                webbrowser.open_new_tab(url)
+            webbrowser.open_new_tab(url)
         else:
             self.search_bare_weblink_and_open(start, end)
 
@@ -637,7 +592,7 @@ class PlainTasksOpenLinkCommand(sublime_plugin.TextCommand):
         if res[3] == 'f':
             return [res[0], "line: %d column: %d" % (int(res[1]), int(res[2]))]
         elif res[3] == 'd':
-            return [res[0], 'Add folder to project' if ST3 else 'Folders are supported only in Sublime 3']
+            return [res[0], 'Add folder to project']
         else:
             return [res[0], res[1]]
 
@@ -653,9 +608,7 @@ class PlainTasksOpenLinkCommand(sublime_plugin.TextCommand):
         res = self._current_res[selection]
         if not res[3]:
             return  # user chose to stop search
-        if not ST3 and res[3] == "d":
-            return sublime.status_message('Folders are supported only in Sublime 3')
-        elif res[3] == "d":
+        if res[3] == "d":
             data = win.project_data()
             if not data:
                 data = {}
@@ -690,8 +643,7 @@ class PlainTasksOpenLinkCommand(sublime_plugin.TextCommand):
                     seen_folders.append(root)
                 subdirs = [f for f in subdirs if os.path.join(root, f) not in seen_folders]
 
-                tname = '%s at %s' % (fn, root)
-                self.thread.name = tname if ST3 else tname.encode('utf8')
+                self.thread.name = '%s at %s' % (fn, root)
 
                 name = os.path.normpath(os.path.abspath(os.path.join(root, fn)))
                 if os.path.isfile(name):
@@ -772,7 +724,7 @@ class PlainTasksOpenLinkCommand(sublime_plugin.TextCommand):
         if not before: dir = 1
         i += dir
         self.view.set_status('PlainTasks', 'Please wait%s…%ssearching %s' %
-                             (' ' * before, ' ' * after, self.thread.name if ST3 else self.thread.name.decode('utf8')))
+                             (' ' * before, ' ' * after, self.thread.name))
         sublime.set_timeout(lambda: self.progress_bar(i, dir), 100)
         return
 
@@ -962,9 +914,7 @@ class PlainTasksArchiveOrgCommand(PlainTasksBase):
 
         sublime.status_message('Archiving tree to {0}'.format(filename))
         try:
-            # Have to use io.open because windows doesn't like writing
-            # utf8 to regular filehandles
-            with io.open(filename, 'a', encoding='utf8') as fh:
+            with open(filename, 'a', encoding='utf8') as fh:
                 data = self.view.substr(region)
                 # Is there a way to read this in?
                 fh.write(u"--- ✄ -----------------------\n")
@@ -1183,15 +1133,12 @@ class PlainTasksGotoTag(sublime_plugin.TextCommand):
         window = self.view.window() or sublime.active_window()
         items = [[self.view.substr(t), '{0}: {1}'.format(self.view.rowcol(t.a)[0], self.view.substr(self.view.line(t)).strip())] for t in self.tags]
 
-        if ST3:
-            from bisect import bisect_left
-            # find the closest tag after current position of viewport, to avoid scrolling
-            closest_index = bisect_left([r.a for r in self.tags], self.view.layout_to_text(self.initial_viewport))
-            llen = len(self.tags)
-            selected_index = closest_index if closest_index < llen else llen - 1
-            window.show_quick_panel(items, self.on_done, 0, selected_index, self.on_highlighted)
-        else:
-            window.show_quick_panel(items, self.on_done)
+        from bisect import bisect_left
+        # find the closest tag after current position of viewport, to avoid scrolling
+        closest_index = bisect_left([r.a for r in self.tags], self.view.layout_to_text(self.initial_viewport))
+        llen = len(self.tags)
+        selected_index = closest_index if closest_index < llen else llen - 1
+        window.show_quick_panel(items, self.on_done, 0, selected_index, self.on_highlighted)
 
     def on_done(self, index):
         if index < 0:

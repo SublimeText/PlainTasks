@@ -1,29 +1,14 @@
-# coding: utf-8
-
-import sublime
 import os
 import re
-import webbrowser
 import tempfile
+import webbrowser
 
 from html import escape as html_escape
 
-platform = sublime.platform()
-ST2 = int(sublime.version()) < 3000
+import sublime
 
-# io is not operable in ST2 on Linux, but in all other cases io is better
-# https://github.com/SublimeTextIssues/Core/issues/254
-if ST2 and platform == 'linux':
-    import codecs as io
-else:
-    import io
-
-if not ST2:
-    from .plist_parser import parse_file
-    from .PlainTasks import PlainTasksBase
-else:
-    from plist_parser import parse_file
-    from PlainTasks import PlainTasksBase
+from .plist_parser import parse_file
+from .PlainTasks import PlainTasksBase
 
 
 def hex_to_rgba(value):
@@ -275,14 +260,13 @@ class PlainTasksConvertToHtml(PlainTasksBase):
         ppath = sublime.packages_path()
         tmtheme = os.path.join(ppath, self.view.settings().get('color_scheme').replace('Packages/', '', 1))
         css = '\n'.join(convert_tmtheme_to_css(tmtheme))
-        with io.open(os.path.join(ppath, 'PlainTasks/templates/template.html'), 'r', encoding='utf8') as template:
-            for line in template:
-                line = (line.replace('$title', title)
-                            .replace('$content', '\n'.join(html_doc))
-                            .replace('$css', css)
-                            .strip('\n'))
-                html_lines.append(line)
-        return u'\n'.join(html_lines)
+        template = sublime.load_resource('Packages/PlainTasks/templates/template.html')
+        for line in template.splitlines():
+            line = (line.replace('$title', title)
+                        .replace('$content', '\n'.join(html_doc))
+                        .replace('$css', css))
+            html_lines.append(line)
+        return '\n'.join(html_lines)
 
     def extracting_scopes(self, edit, region, scope_name=''):
         '''extract scope for each char in line wo dups, ineffective but it works?'''

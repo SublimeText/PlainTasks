@@ -1,10 +1,7 @@
-# coding: utf-8
-import sublime, sublime_plugin
 import itertools
 
-ST3 = int(sublime.version()) >= 3000
-if not ST3:
-    import locale
+import sublime
+import sublime_plugin
 
 
 def get_all_projects_and_separators(view):
@@ -25,9 +22,9 @@ class PlainTasksBase(sublime_plugin.TextCommand):
             self.open_tasks_bullet = self.done_tasks_bullet = self.canc_tasks_bullet = '-'
             self.before_date_space = ''
         else:
-            self.open_tasks_bullet = settings.get('open_tasks_bullet', u'☐')
-            self.done_tasks_bullet = settings.get('done_tasks_bullet', u'✔')
-            self.canc_tasks_bullet = settings.get('cancelled_tasks_bullet', u'✘')
+            self.open_tasks_bullet = settings.get('open_tasks_bullet', '☐')
+            self.done_tasks_bullet = settings.get('done_tasks_bullet', '✔')
+            self.canc_tasks_bullet = settings.get('cancelled_tasks_bullet', '✘')
             self.before_date_space = settings.get('before_date_space', ' ')
 
         translate_tabs_to_spaces = settings.get('translate_tabs_to_spaces', False)
@@ -46,11 +43,9 @@ class PlainTasksBase(sublime_plugin.TextCommand):
         self.project_postfix = settings.get('project_tag', True)
         self.archive_name = settings.get('archive_name', 'Archive:')
         # org-mode style archive stuff
-        self.archive_org_default_filemask = u'{dir}{sep}{base}_archive{ext}'
+        self.archive_org_default_filemask = '{dir}{sep}{base}_archive{ext}'
         self.archive_org_filemask = settings.get('archive_org_filemask', self.archive_org_default_filemask)
 
-        if not ST3:
-            self.sys_enc = locale.getpreferredencoding()
         self.runCommand(edit, **kwargs)
 
     def format_line_end(self, tag, tznow):
