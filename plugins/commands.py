@@ -1120,8 +1120,11 @@ class PlainTasksHover(sublime_plugin.ViewEventListener):
         if not bullet:
             return
 
-        width, height = self.view.viewport_extent()
-        self.view.show_popup(self.msg.format(actions=self.actions.get(line_scope_name)).format(point=point), 0, point or self.view.sel()[0].begin() or 1, width, int(height / 2), self.exec_action)
+        self.view.show_popup(
+            content=self.msg.format(actions=self.actions.get(line_scope_name)).format(point=point),
+            location=point or self.view.sel()[0].begin() or 1,
+            on_navigate=self.exec_action
+        )
 
     def exec_action(self, msg):
         action, at = msg.split('\v')
