@@ -482,7 +482,7 @@ class PlainTasksViewEventListener(sublime_plugin.ViewEventListener):
 
 class PlainTasksPreviewShortDate(PlainTasksViewEventListener):
     def __init__(self, view):
-        self.view = view
+        super().__init__(view)
         self.phantoms = sublime.PhantomSet(view, 'plain_tasks_preview_short_date')
 
     def on_selection_modified_async(self):
@@ -545,12 +545,9 @@ class PlainTasksPreviewShortDate(PlainTasksViewEventListener):
 
 
 class PlainTasksChooseDate(sublime_plugin.ViewEventListener):
-    def __init__(self, view):
-        self.view = view
-
     @classmethod
     def is_applicable(cls, settings):
-        return settings.get('show_calendar_on_tags')
+        return bool(settings.get('show_calendar_on_tags', False))
 
     def on_selection_modified_async(self):
         s = self.view.sel()[0]
@@ -702,7 +699,7 @@ class PlainTasksCalendar(sublime_plugin.TextCommand):
 
 class PlainTasksRemain(PlainTasksViewEventListener):
     def __init__(self, view):
-        self.view = view
+        super().__init__(view)
         self.phantom_set = sublime.PhantomSet(view, 'plain_tasks_remain_time')
         self.view.settings().add_on_change('plain_tasks_remain_time_phantoms', self.check_setting)
         self.phantoms = self.view.settings().get('plain_tasks_remain_time_phantoms', [])
