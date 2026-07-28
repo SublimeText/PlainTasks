@@ -3,23 +3,44 @@
 	// PlainTasks specific settings
 	// ----------------------------
 
+	// Enable taskpaper compatibility mode
+	"taskpaper_compatible": false,
+
+	// Character to use for open tasks
+	// Valid only, if "taskpaper_compatible" is set false.
 	// options: - | ❍ | ❑ | ■ | □ | ☐ | ▪ | ▫ | – | — | ≡ | → | › | [ ]
 	"open_tasks_bullet": "☐",
 
+	// Character to use for done tasks
+	// Valid only, if "taskpaper_compatible" is set false.
 	// options: + | ✓ | ✔ | √ | [x]
 	"done_tasks_bullet": "✔",
 
+	// Character to use for cancelled tasks
+	// Valid only, if "taskpaper_compatible" is set false.
 	// options: x | ✘ | [-] | ❌
 	"cancelled_tasks_bullet": "✘",
 
 	// Number of spaces to add in front of new tasks
+	// Valid only, if "taskpaper_compatible" is set false.
 	"before_tasks_bullet_margin": 2,
+
+	// Space to insert after task bullets
+	// Defaults to single space or tab depending on "translate_tabs_to_spaces" setting.
+	// Valid only, if "taskpaper_compatible" is set false.
+	// "tasks_bullet_space": " "
 
 	// Tags
 	// ----
 
+	// Space to insert in front of dates
+	"before_date_space": " ",
+
 	// Preferred date and time format in tags
 	"date_format": "(%y-%m-%d %H:%M)",
+
+	// add date tag when marking a task done.
+	"done_date": true,
 
 	// related to @cancelled as well
 	"done_tag": true,
@@ -41,6 +62,9 @@
 
 	// Specify archived tasks' sort order
 	"new_on_top": true,
+
+	// org-mode style archive file naming
+	"archive_org_filemask": "{dir}{sep}{base}_archive{ext}",
 
 	// Status Bar
 	// ----------
