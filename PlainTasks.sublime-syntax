@@ -1,11 +1,15 @@
 %YAML 1.2
 ---
 name: Tasks
+scope: text.todo
+
 file_extensions:
   - todo
   - tasks
+  - taskpaper
+  - todolist
   - todolist.txt
-scope: text.todo
+
 contexts:
   main:
     - match: '^\s*(\#?\s?\w+.*?:\s*?(\@[^\s]+(\(.*?\))?\s*?)*$\n?)'
