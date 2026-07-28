@@ -936,6 +936,7 @@ class PlainTasksArchiveOrgCommand(PlainTasksBase):
 
         sublime.status_message('Archiving tree to {0}'.format(filename))
         try:
+            os.makedirs(os.path.dirname(filename), exist_ok=True)
             with open(filename, 'a', encoding='utf8') as fh:
                 data = self.view.substr(region)
                 # Is there a way to read this in?
