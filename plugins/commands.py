@@ -1074,7 +1074,6 @@ class PlainTasksHover(sublime_plugin.ViewEventListener):
     '''Show popup with actions when hover over bullet'''
 
     msg = ('<style>'  # four curly braces because it will be modified with format method twice
-            'html {{{{background-color: color(var(--background) blenda(white 75%))}}}}'
             'body {{{{margin: .1em .3em}}}}'
             'p {{{{margin: .5em 0}}}}'
             'a {{{{text-decoration: none}}}}'
