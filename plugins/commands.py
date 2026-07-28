@@ -10,7 +10,29 @@ from datetime import datetime, timezone
 import sublime
 import sublime_plugin
 
-from .APlainTasksCommon import PlainTasksBase, PlainTasksFold, get_all_projects_and_separators
+from ._common import PlainTasksBase, PlainTasksFold, get_all_projects_and_separators
+
+__all__ = [
+    "PlainTasksNewCommand",
+    "PlainTasksNewWithDateCommand",
+    "PlainTasksCompleteCommand",
+    "PlainTasksInjectDueDateCommand",
+    "PlainTasksSortByDueDateAndPriorityCommand",
+    "PlainTasksCancelCommand",
+    "PlainTasksArchiveCommand",
+    "PlainTasksNewTaskDocCommand",
+    "PlainTasksOpenUrlCommand",
+    "PlainTasksOpenLinkCommand",
+    "PlainTasksSortByDate",
+    "PlainTasksRemoveBold",
+    "PlainTasksStatsStatus",
+    "PlainTasksCopyStats",
+    "PlainTasksArchiveOrgCommand",
+    "PlainTasksFoldToTags",
+    "PlainTasksAddGutterIconsForTags",
+    "PlainTasksHover",
+    "PlainTasksGotoTag",
+]
 
 
 def tznow():

@@ -6,8 +6,9 @@ from html import escape as html_escape
 
 import sublime
 
-from .PlainTasks import PlainTasksBase
+from ._common import PlainTasksBase
 
+__all__ = ["PlainTasksConvertToHtml"]
 
 def hex_to_rgba(value):
     value = value.lstrip('#')

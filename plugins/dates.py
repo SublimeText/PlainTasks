@@ -9,13 +9,30 @@ from datetime import timedelta
 import sublime
 import sublime_plugin
 
-from .APlainTasksCommon import PlainTasksBase, PlainTasksEnabled, PlainTasksFold
+from ._common import PlainTasksBase, PlainTasksEnabled, PlainTasksFold
 
 try:  # unavailable dependencies shall not break basic functionality
     from dateutil import parser as dateutil_parser
     from dateutil.relativedelta import relativedelta
 except ImportError:
     dateutil_parser = None
+
+__all__ = [
+    "PlainTasksToggleHighlightPastDue",
+    "PlainTasksHLDue",
+    "PlainTasksFoldToDueTags",
+    "PlainTasksCalculateTotalTimeForProject",
+    "PlainTasksCalculateTimeForTask",
+    "PlainTasksReCalculateTimeForTasks",
+    "PlainTaskInsertDate",
+    "PlainTasksReplaceShortDate",
+    "PlainTasksViewEventListener",
+    "PlainTasksPreviewShortDate",
+    "PlainTasksChooseDate",
+    "PlainTasksCalendar",
+    "PlainTasksRemain",
+    "plugin_unloaded"
+]
 
 locale.setlocale(locale.LC_ALL, '')
 

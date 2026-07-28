@@ -1,7 +1,7 @@
 from unittest import TestCase
 from datetime import datetime, timedelta
 
-from PlainTasks import PlainTasksDates
+from PlainTasks.plugins import dates as plaintask_dates
 
 
 class TestDatesFunctions(TestCase):
@@ -23,7 +23,7 @@ class TestDatesFunctions(TestCase):
             ['23', datetime(2016, 12, 1, 23, 0, 0), datetime(2016, 12, 23, 23, 0, 0)],
         ]
         for (string, now, result) in cases:
-            date, error = PlainTasksDates.convert_date(string, now)
+            date, error = plaintask_dates.convert_date(string, now)
             self.assertEqual(date, result)
 
     def test_parse_date(self):
@@ -54,7 +54,7 @@ class TestDatesFunctions(TestCase):
             fmt = c.get('date_format', default_format)
             yearfirst = fmt.startswith(('(%y', '(%Y'))
             dayfirst = fmt.startswith('(%d')
-            date, error = PlainTasksDates.parse_date(c['string'],
+            date, error = plaintask_dates.parse_date(c['string'],
                                                      date_format=fmt,
                                                      yearfirst=yearfirst,
                                                      dayfirst=dayfirst,
@@ -90,7 +90,7 @@ class TestDatesFunctions(TestCase):
             {'string': '++4w', 'result': datetime(2016, 12, 29, 23, 0), 'view': View(created='@created(16.12.1)')},
         ]
         for c in cases:
-            date, error = PlainTasksDates.increase_date(c.get('view', None), region,
+            date, error = plaintask_dates.increase_date(c.get('view', None), region,
                                                         c['string'],
                                                         c.get('default', default),
                                                         c.get('date_format', default_format))
@@ -112,7 +112,7 @@ class TestDatesFunctions(TestCase):
             {'delta': timedelta(hours=94), 'result': '3 days, 22:00', },
         ]
         for c in cases:
-            string = PlainTasksDates.format_delta(c.get('view', View()), c['delta'])
+            string = plaintask_dates.format_delta(c.get('view', View()), c['delta'])
             self.assertEqual(string, c['result'])
 
     def test_is_yearfirst(self):
@@ -125,7 +125,7 @@ class TestDatesFunctions(TestCase):
             ['( %d.%m.%y %H:%M )', False],
         ]
         for (date_format, result) in cases:
-            yf = PlainTasksDates.is_yearfirst(date_format)
+            yf = plaintask_dates.is_yearfirst(date_format)
             self.assertEqual(yf, result)
 
     def test_is_dayfirst(self):
@@ -138,5 +138,5 @@ class TestDatesFunctions(TestCase):
             ['( %d.%m.%y %H:%M )', True],
         ]
         for (date_format, result) in cases:
-            df = PlainTasksDates.is_dayfirst(date_format)
+            df = plaintask_dates.is_dayfirst(date_format)
             self.assertEqual(df, result)
