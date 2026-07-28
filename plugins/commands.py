@@ -782,7 +782,7 @@ class PlainTasksSortByDate(PlainTasksBase):
         if archive_pos:
             have_date = r'(^\s*[^\n]*?\s\@(?:done|cancelled)\s*(\([\d\w,\.:\-\/ ]*\))[^\n]*$)'
             all_tasks_prefixed_date = []
-            all_tasks = self.view.find_all(have_date, 0, u"\\2\\1", all_tasks_prefixed_date)
+            all_tasks = self.view.find_all(have_date, 0, "\\2\\1", all_tasks_prefixed_date)
 
             tasks_prefixed_date = []
             tasks = []
@@ -940,15 +940,15 @@ class PlainTasksArchiveOrgCommand(PlainTasksBase):
             with open(filename, 'a', encoding='utf8') as fh:
                 data = self.view.substr(region)
                 # Is there a way to read this in?
-                fh.write(u"--- ✄ -----------------------\n")
-                fh.write(u"Archived {0}:\n".format(tznow().strftime(
+                fh.write("--- ✄ -----------------------\n")
+                fh.write("Archived {0}:\n".format(tznow().strftime(
                     self.date_format)))
                 # And, finally, write our data
-                fh.write(u"{0}\n".format(data))
+                fh.write("{0}\n".format(data))
             return True
 
         except Exception as e:
-            sublime.error_message(u"Error:\n\nUnable to append to {0}\n{1}".format(
+            sublime.error_message("Error:\n\nUnable to append to {0}\n{1}".format(
                 filename, str(e)))
             return False
 
@@ -973,7 +973,7 @@ class PlainTasksArchiveOrgCommand(PlainTasksBase):
                     dir=dir, base=base, ext=extension, sep=sep)
 
             # Display error, letting the user know
-            sublime.error_message(u"Error:\n\nInvalid filemask:{0}\nUsing default: {1}".format(
+            sublime.error_message("Error:\n\nInvalid filemask:{0}\nUsing default: {1}".format(
                 self.archive_org_filemask, self.archive_org_default_filemask))
 
         return archive_filename
