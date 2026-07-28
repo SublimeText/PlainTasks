@@ -1,16 +1,61 @@
 {
-	"open_tasks_bullet": "☐", // options: - | ❍ | ❑ | ■ | □ | ☐ | ▪ | ▫ | – | — | ≡ | → | › | [ ]
-	"done_tasks_bullet": "✔", // options: + | ✓ | ✔ | √ | [x]
-	"cancelled_tasks_bullet": "✘", // options: x | ✘ | [-] | ❌
-	"before_tasks_bullet_margin": 1,
-	"date_format": "(%y-%m-%d %H:%M)",
-	"done_tag": true, // related to @cancelled as well
-	"project_tag": true, // if true - postfix archived task with project tag, if false - prefix
-	"archive_name": "Archive:", // make sure it is the unique project name within your todo files
-	"new_on_top": true, // how to sort archived tasks
-	"show_remain_due": true, // in Sublime 3, show remain or overdue time under due tags
+	// ----------------------------
+	// PlainTasks specific settings
+	// ----------------------------
 
-	"bar_empty": "☐", // empty cell for progress-bar in status-bar, for more details see Custom Statistics in README
+	// options: - | ❍ | ❑ | ■ | □ | ☐ | ▪ | ▫ | – | — | ≡ | → | › | [ ]
+	"open_tasks_bullet": "☐",
+
+	// options: + | ✓ | ✔ | √ | [x]
+	"done_tasks_bullet": "✔",
+
+	// options: x | ✘ | [-] | ❌
+	"cancelled_tasks_bullet": "✘",
+
+	// Number of spaces to add in front of new tasks
+	"before_tasks_bullet_margin": 2,
+
+	// Tags
+	// ----
+
+	// Preferred date and time format in tags
+	"date_format": "(%y-%m-%d %H:%M)",
+
+	// related to @cancelled as well
+	"done_tag": true,
+
+	// if true - postfix archived task with project tag, if false - prefix
+	"project_tag": true,
+
+	// Show date and time picker automatically when caret is on tag
+	"show_calendar_on_tags": true,
+
+	// Show remain or overdue time under due tags
+	"show_remain_due": true,
+
+	// Archives
+	// --------
+
+	// make sure it is the unique project name within your todo files
+	"archive_name": "Archive:",
+
+	// Specify archived tasks' sort order
+	"new_on_top": true,
+
+	// Status Bar
+	// ----------
+
+	// Empty cell for progress-bar in status-bar.
+	// For more details see Custom Statistics in README
+	"bar_empty": "□",
+
+	// Full cell for progress-bar in status-bar.
+	// For more details see Custom Statistics in README
+	"bar_full": "■",
+
+	// ---------------------------
+	// syntax specific preferences
+	// ---------------------------
 
 	"color_scheme": "Packages/PlainTasks/tasks.hidden-tmTheme",
 		// other bundled schemes:
