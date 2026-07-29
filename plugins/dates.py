@@ -327,9 +327,9 @@ class PlainTasksToggleHighlightPastDue(PlainTasksEnabled):
 
         past_due, due_soon, misformatted, phantoms = self.group_due_tags(dates_strings, dates_regions)
 
-        scope_past_due = self.view.settings().get('scope_past_due', 'string.other.tag.todo.critical')
-        scope_due_soon = self.view.settings().get('scope_due_soon', 'string.other.tag.todo.high')
-        scope_misformatted = self.view.settings().get('scope_misformatted', 'string.other.tag.todo.low')
+        scope_past_due = self.view.settings().get('scope_past_due', 'markup.tag.priority.critical')
+        scope_due_soon = self.view.settings().get('scope_due_soon', 'markup.tag.priority.high')
+        scope_misformatted = self.view.settings().get('scope_misformatted', 'markup.tag.priority.low')
         icon_past_due = self.view.settings().get('icon_past_due', 'circle')
         icon_due_soon = self.view.settings().get('icon_due_soon', 'dot')
         icon_misformatted = self.view.settings().get('icon_misformatted', '')
@@ -351,7 +351,7 @@ class PlainTasksToggleHighlightPastDue(PlainTasksEnabled):
         due_soon_threshold = self.view.settings().get('highlight_due_soon', 24) * 60 * 60
 
         for i, region in enumerate(dates_regions):
-            if any(s in self.view.scope_name(region.a) for s in ('completed', 'cancelled')):
+            if any(s in self.view.scope_name(region.a) for s in ('done', 'cancelled')):
                 continue
             text = dates_strings[i]
             if is_relative(text):
@@ -483,7 +483,7 @@ class PlainTasksReCalculateTimeForTasks(PlainTasksEnabled):
         regions = itertools.chain(*(reversed(self.view.lines(region)) for region in reversed(list(self.view.sel()))))
         for line in regions:
             current_scope = self.view.scope_name(line.a)
-            if not any(s in current_scope for s in ('completed', 'cancelled')):
+            if not any(s in current_scope for s in ('done', 'cancelled')):
                 continue
 
             line_contents = self.view.substr(line)
@@ -505,7 +505,7 @@ class PlainTasksReCalculateTimeForTasks(PlainTasksEnabled):
                     'toggle_matches': toggle_matches,
                     'now': now,
                     'eol': line.begin() + len(line_contents),
-                    'tag': 'lasted' if 'completed' in current_scope else 'wasted'}
+                    'tag': 'lasted' if 'done' in current_scope else 'wasted'}
             )
 
 

@@ -10,99 +10,349 @@ file_extensions:
   - todolist
   - todolist.txt
 
+contexts:
+  main:
+    # Comments
+    - match: (//).*\n?
+      scope: comment.line.todo
+      captures:
+        1: punctuation.definition.comment.todo
+    # Separators
+    - match: ^_{2,}$
+      scope: punctuation.separator.archive.todo
+    - match: ^\s*---(.{3,5})---+$
+      scope: punctuation.separator.project.todo
+    # Headings
+    - match: ^\s*((#\s)?(\w[^:]*)(:))(?=(?:\s*{{tag}})*\s*$)
+      captures:
+        1: markup.heading.todo
+        2: punctuation.definition.heading.todo
+        3: entity.name.section.heading.todo
+        4: punctuation.separator.heading.todo
+      push: inside-header
+    # Tasks
+    - match: ^\s*({{cancelled_tasks_bullet}})(?:\s+({{task_text}}))?
+      captures:
+        1: punctuation.definition.task.cancelled.todo
+      push: inside-cancelled-task
+    - match: ^\s*({{done_tasks_bullet}})(?:\s+({{task_text}}))?
+      captures:
+        1: punctuation.definition.task.done.todo
+      push: inside-done-task
+    - match: ^\s*({{open_tasks_bullet}})(?:\s+({{task_text}}))?(?=.*?@start(?:ed)?)
+      captures:
+        1: punctuation.definition.task.pending.todo
+      push: inside-started-task
+    - match: ^\s*({{open_tasks_bullet}})(?:\s+({{task_text}}))?
+      captures:
+        1: punctuation.definition.task.pending.todo
+      push: inside-pending-task
+    # Other
+    - match: ^\s*(?=\S)
+      push: inside-note
+
+  inside-header:
+    - meta_scope: meta.heading.todo
+    - include: line-content
+
+  inside-cancelled-task:
+    - meta_scope: meta.task.cancelled.todo
+    - include: line-content
+
+  inside-done-task:
+    - meta_scope: meta.task.done.todo
+    - include: line-content
+
+  inside-pending-task:
+    - meta_scope: meta.task.pending.todo
+    - include: line-content
+
+  inside-started-task:
+    - meta_scope: meta.task.started.todo
+    - include: line-content
+
+  inside-note:
+    - meta_scope: meta.note.todo
+    - match: $\n?
+      pop: true
+    - include: bold
+    - include: italic
+    - include: urls
+
+  line-content:
+    - match: $\n?
+      pop: true
+    - include: bold
+    - include: italic
+    - include: urls
+    - include: tags
+
+###[ INLINE: EMPHASIS ]#######################################################
+
+  bold:
+    # https://spec.commonmark.org/0.30/#emphasis-and-strong-emphasis
+    - match: '{{bold_italic_asterisk_begin}}'
+      captures:
+        1: punctuation.definition.bold.begin.todo
+        2: markup.italic.todo punctuation.definition.italic.begin.todo
+        3: punctuation.definition.bold.begin.todo
+        4: markup.italic.todo punctuation.definition.italic.begin.todo
+      push: bold-italic-asterisk
+    - match: '{{bold_asterisk_begin}}'
+      scope: punctuation.definition.bold.begin.todo
+      push: bold-asterisk
+    - match: \b(__)(_)(?![_\s])
+      captures:
+        1: punctuation.definition.bold.begin.todo
+        2: markup.italic.todo punctuation.definition.italic.begin.todo
+      push: bold-italic-underscore
+    - match: \b__(?=\S)(?!_[_\s])
+      scope: punctuation.definition.bold.begin.todo
+      push: bold-underscore
+
+  bold-asterisk:
+    - meta_scope: markup.bold.todo
+    - match: '{{wspace}}\*{2,}'
+    - match: \*\*
+      scope: punctuation.definition.bold.end.todo
+      pop: true
+    # Consume the underscore that has no corresponding underscore before the closing bold
+    # punctuation on the same line, as it won't be treated as italic by CommonMark
+    - match: \b_(?=[^\s_])(?=[^*_]*\*\*)
+    - include: bold-common
+
+  bold-underscore:
+    - meta_scope: markup.bold.todo
+    - match: '{{wspace}}_{2,}'
+    - match: __(?=_*\b)
+      scope: punctuation.definition.bold.end.todo
+      pop: true
+    # Consume the asterisk that has no corresponding asterisk before the closing bold
+    # punctuation on the same line, as it won't be treated as italic by CommonMark
+    - match: \*(?=[^\s*])(?=[^*_]*__\b)
+    - include: bold-common
+
+  bold-italic-asterisk:
+    - meta_scope: markup.bold.todo
+    - meta_content_scope: markup.italic.todo
+    - match: '{{wspace}}\*+'
+    - match: (\*)(\*\*)
+      captures:
+        1: markup.italic.todo punctuation.definition.italic.end.todo
+        2: punctuation.definition.bold.end.todo
+      pop: true
+    - match: \*\*
+      scope: markup.italic.todo punctuation.definition.bold.end.todo
+      set: italic-after-bold-italic-asterisk
+    - match: \*(?!\*[^\s*])
+      scope: markup.italic.todo punctuation.definition.italic.end.todo
+      set: bold-after-bold-italic-asterisk
+    - include: emphasis-common
+
+  bold-after-bold-italic-asterisk:
+    - meta_content_scope: markup.bold.todo
+    - match: '{{wspace}}\*{3,}'
+    - match: \*\*
+      scope: markup.bold.todo punctuation.definition.bold.end.todo
+      pop: true
+    - include: bold-common
+
+  italic-after-bold-italic-asterisk:
+    - meta_content_scope: markup.italic.todo
+    - match: '{{wspace}}\*{3,}'
+    - match: \*(?!\*[^\s*])
+      scope: markup.italic.todo punctuation.definition.italic.end.todo
+      pop: true
+    - include: italic-common
+
+  bold-italic-underscore:
+    - meta_scope: markup.bold.todo
+    - meta_content_scope: markup.italic.todo
+    - match: '{{wspace}}_+'
+    - match: (_)(__)(?=_*\b)
+      captures:
+        1: markup.italic.todo punctuation.definition.italic.end.todo
+        2: punctuation.definition.bold.end.todo
+      pop: true
+    - match: __\b
+      scope: markup.italic.todo punctuation.definition.bold.end.todo
+      set: italic-after-bold-italic-underscore
+    - match: _\b
+      scope: markup.italic.todo punctuation.definition.italic.end.todo
+      set: bold-after-bold-italic-underscore
+    - include: emphasis-common
+
+  bold-after-bold-italic-underscore:
+    - meta_content_scope: markup.bold.todo
+    - match: '{{wspace}}_{3,}'
+    - match: __(?=_*\b)
+      scope: markup.bold.todo punctuation.definition.bold.end.todo
+      pop: true
+    - include: bold-common
+
+  italic-after-bold-italic-underscore:
+    - meta_content_scope: markup.italic.todo
+    - match: '{{wspace}}_{3,}'
+    - match: _(?=_*\b)
+      scope: markup.italic.todo punctuation.definition.italic.end.todo
+      pop: true
+    - include: italic-common
+
+  bold-common:
+    - include: emphasis-common
+    - include: italic
+
+  italic:
+    - match: '{{italic_asterisk_begin}}'
+      scope: punctuation.definition.italic.begin.todo
+      push: italic-asterisk
+    - match: \b_(?=\S)(?!_)
+      scope: punctuation.definition.italic.begin.todo
+      push: italic-underscore
+    - match: '[*_]+'
+
+  italic-asterisk:
+    - meta_scope: markup.italic.todo
+    - match: '{{wspace}}\*(?!\*)'
+    - match: \*(?!\*[^\s*])
+      scope: punctuation.definition.italic.end.todo
+      pop: true
+    - include: italic-common
+
+  italic-underscore:
+    - meta_scope: markup.italic.todo
+    - match: '{{wspace}}_(?!_)'
+    - match: _(?=_*\b)
+      scope: punctuation.definition.italic.end.todo
+      pop: true
+    - include: italic-common
+
+  italic-common:
+    - include: emphasis-common
+    - include: bold
+
+  emphasis-common:
+    - match: $
+      pop: true
+
+###[ INLINE: TAGS ]############################################################
+
+  tags:
+    # priority
+    - match: '[\@✭]critical\b'
+      scope: markup.tag.priority.critical.todo
+    - match: '[\@✭]high\b'
+      scope: markup.tag.priority.high.todo
+    - match: '[\@✭]low\b'
+      scope: markup.tag.priority.low.todo
+    # states
+    - match: '[\@✭](?:completed|done)\b'
+      scope: markup.tag.state.done.todo
+      push: done-date
+    - match: '[\@✭]cancelled\b'
+      scope: markup.tag.state.cancelled.todo
+      push: cancel-date
+    - match: '[\@✭]start(?:ed)?\b'
+      scope: markup.tag.state.started.todo
+      push: start-date
+    # due time
+    - match: '[\@✭]created\b'
+      scope: markup.tag.created.todo
+      push: created-date
+    - match: '[\@✭]due\b'
+      scope: markup.tag.due.date.todo
+      push: due-date
+    - match: '(?:\@today|✭TODAY|✭ᴛᴏᴅᴀʏ)\b'
+      scope: markup.tag.due.today.todo
+    # other
+    - match: '\@[\w\.\(\)\-!? :\+]+'
+      scope: markup.tag.other.todo
+
+  created-date:
+    - meta_scope: meta.tag.created.todo
+    - include: date
+
+  due-date:
+    - meta_scope: meta.tag.due.date.todo
+    - include: date
+
+  cancel-date:
+    - meta_scope: meta.tag.state.cancelled.todo
+    - include: date
+
+  done-date:
+    - meta_scope: meta.tag.state.done.todo
+    - include: date
+
+  start-date:
+    - meta_scope: meta.tag.state.started.todo
+    - include: date
+
+  date:
+    - match: \s*((\()({{date_and_time}})(\)))
+      captures:
+        1: meta.parens.todo
+        2: punctuation.section.parens.begin.todo
+        3: constant.numeric.timestamp.todo
+        4: punctuation.section.parens.end.todo
+      pop: true
+    - match: ''
+      pop: true
+
+  urls:
+    - match: <(?=[\w+]+(?:://|[./]).*>)
+      scope: punctuation.definition.link.begin.todo
+      push: inside-url
+
+  inside-url:
+    - meta_scope: meta.link.url.todo
+    - meta_content_scope: markup.underline.link.url.todo
+    - match: \>
+      scope: punctuation.definition.link.end.todo
+      pop: true
+    - match: (%)\h{2}
+      scope: constant.character.escape.url.todo
+      captures:
+        1: punctuation.definition.escape.todo
+    - match: '[/&?#]'
+      scope: punctuation.separator.path.todo
+    - match: ':/{,2}'
+      scope: punctuation.separator.path.todo
+
+###[ VARIABLES ]###############################################################
+
 variables:
   open_tasks_bullet: -|❍|■|□|☐|🔳|❑|▪|▫|–|—|≡|→|›|\[\s\]
   done_tasks_bullet: \+|🗸|✓|✔|☑|✅|☑️|√|\[x\]
   cancelled_tasks_bullet: x|×|🗙|✖|❌|❎|✘|\[-\]
 
-contexts:
-  main:
-    - match: '^\s*(\#?\s?\w+.*?:\s*?(\@[^\s]+(\(.*?\))?\s*?)*$\n?)'
-      scope: keyword.control.header.todo
-    - match: '^\s*(?:({{done_tasks_bullet}})(\s+(?:[^\@\n]|(?<!\s)\@|\@(?=\s))*)([^\n]*))|^\s*(?:(-)(\s+(?:[^\@]|(?<!\s)\@|\@(?=\s))*)(.*\@done(?=\s|\(|$)[^\n]*))'
-      scope: meta.item.todo.completed
-      captures:
-        1: punctuation.definition.bullet.completed.todo
-        2: comment.line.completed.todo
-        3: meta.tag.todo.completed
-        4: punctuation.definition.bullet.completed.todo
-        5: comment.line.completed.todo
-        6: meta.tag.todo.completed
-    - match: '^\s*(?:({{cancelled_tasks_bullet}})(\s+(?:[^\@\n]|(?<!\s)\@|\@(?=\s))*)(.*))|^\s*(?:(-)(\s+(?:[^\@]|(?<!\s)\@|\@(?=\s))*)(.*\@cancelled(?=\s|\(|$)[^\n]*))'
-      scope: meta.item.todo.cancelled
-      captures:
-        1: punctuation.definition.bullet.cancelled.todo
-        2: text.cancelled.todo
-        3: meta.tag.todo.cancelled
-        4: punctuation.definition.bullet.cancelled.todo
-        5: text.cancelled.todo
-        6: meta.tag.todo.cancelled
-    - match: '^\s*({{open_tasks_bullet}})(?=(\s+(?:[^\@\n]|(?<![ \t])\@)*)(?!([^\n]*)?(\@done|\@cancelled)[\s\(]))'
-      captures:
-        1: punctuation.definition.bullet.pending.todo
-      push:
-        - meta_scope: meta.item.todo.pending
-        - match: $
-          captures:
-            1: punctuation.definition.bullet.pending.todo
-          pop: true
-        - include: italic
-        - include: bold
-        - include: url
-        - include: tag
-        - include: today
-        - include: low
-        - include: high
-        - include: critical
-    - match: '^\s*(?=\S)'
-      push:
-        - meta_scope: notes.todo
-        - match: $\n?
-          pop: true
-        - include: italic
-        - include: bold
-        - include: url
-    - match: ^＿+$
-      scope: meta.punctuation.archive.todo
-    - match: '^\s*---.{3,5}---+$'
-      scope: meta.punctuation.separator.todo
-  bold:
-    - match: '(?<=\s|^)(\*\*|__)(?=\S)(?=(?!(?<=\S)\1)[^\n]+(?<=\S)\1)(?=[^\n]+(?<=\S)(\1)((?![\w\d\n])|(?=\s|$)))'
-      captures:
-        1: punctuation.definition.bold
-      push:
-        - meta_scope: todo.bold
-        - match: '(?<=\S)(\1)((?![\w\d\n])|(?=\s|$))'
-          captures:
-            1: punctuation.definition.bold
-          pop: true
-  critical:
-    - match: (?<=\s)\@critical|✭critical
-      scope: string.other.tag.todo.critical
-  high:
-    - match: (?<=\s)\@high|✭high
-      scope: string.other.tag.todo.high
-  italic:
-    - match: '(?<=\s|^)(\*|_)(?=\S)(?=(\1\1|(?!(?<=\S)\1).)++(?<=\S)\1)(?=[^\n]+(?<=\S)(\1)(?!\1|[\w\d]))'
-      captures:
-        1: punctuation.definition.italic
-      push:
-        - meta_scope: todo.italic
-        - match: '(?<=\S)(\1)(?!\1|[\w\d])'
-          captures:
-            1: punctuation.definition.italic
-          pop: true
-  low:
-    - match: (?<=\s)\@low|✭low
-      scope: string.other.tag.todo.low
-  tag:
-    - match: '(?<=\s)\@(?!(high|today|critical|low|completed|done)[\s\(])[\w\d\.\(\)\-!? :\+]+[ \t]*'
-      scope: meta.tag.todo
-  today:
-    - match: (?<=\s)\@today|✭ᴛᴏᴅᴀʏ
-      scope: string.other.tag.todo.today
-  url:
-    - match: '(?<!\S)(<)\w+?(?!\s)(\.|:)(?!\s)[^\n]+?(>)'
-      scope: todo.url
-      captures:
-        1: punctuation.definition.url
+  task_text: ([^\s@✭].*?(?=\s+\@|\s*✭|\s*$))
+  tag: '[@✭]\w+(?:\([^)]*\))?'
+  date_and_time: '[\w\.\(\)\-!? :\+]+'
+
+  # https://spec.commonmark.org/0.30/#left-flanking-delimiter-run
+  bold_italic_asterisk_begin: |-
+    (?x:
+         (\*\*)(\*) {{no_space_nor_punct}}
+    | \B (\*\*)(\*) {{no_space_but_punct}}
+    )
+
+  bold_asterisk_begin: |-
+    (?x:
+         \*{2} {{no_space_nor_punct}}
+    | \B \*{2} {{no_space_but_punct}}
+    )
+
+  italic_asterisk_begin: |-
+    (?x:
+         \* {{no_space_nor_punct}}
+    | \B \* {{no_space_but_punct}}
+    )
+
+  # not followed by Unicode whitespace and not followed by a Unicode punctuation character
+  no_space_nor_punct: (?![\s*\p{P}])
+  # not followed by Unicode whitespace and followed by a Unicode punctuation character
+  no_space_but_punct: (?=[[^\s*]&&\p{P}])
+
+  # BOL for ST specific newline treatment or unicode whitespace
+  wspace: (?:^|\s+)

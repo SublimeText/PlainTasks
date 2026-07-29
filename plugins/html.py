@@ -44,33 +44,33 @@ default_ccsl = [  # hand-made repr of tasks.hidden-tmTheme
 ]
 
 scope_to_tag = {  # key is name of regex group, value is regex expression
-    'body': r'^body$',
-    'a':    r'(?:todo\.)?url(?!\.)',
+    'body':               r'^body$',
+    'a':                  r'^markup\.underline\.link(?:\.url\b|(?!\.))',
     # PENDING
-    '__open':           r'(?:^|\b)meta(?!\.)',
-    '__bullet_pending': r'bullet\.pending(?!\.)',
+    '__open':             r'^meta\.task(?:\.pending\b|\.started\b|(?!\.))',
+    '__bullet_pending':   r'^punctuation\.definition\.task(?:\.pending\b|\.started\b|(?!\.))',
     # COMPLETED
-    '__done':        r'comment(?!\.)',
-    '__bullet_done': r'bullet\.completed(?!\.)',
-    '__tag_done':    r'tag\.todo\.completed(?!\.)',
+    '__done':             r'^meta\.task\.done\b',
+    '__bullet_done':      r'^punctuation\.definition\.task\.done\b',
+    '__tag_done':         r'^markup\.tag\.state\.done',
     # CANCELLED
-    '__cancelled':        r'item\.todo\.cancelled(?!\.)',
-    '__bullet_cancelled': r'bullet\.cancelled(?!\.)',
-    '__tag_cancelled':    r'tag\.todo\.cancelled(?!\.)',
+    '__cancelled':        r'^meta\.task\.cancelled\b',
+    '__bullet_cancelled': r'^punctuation\.definition\.task\.cancelled\b',
+    '__tag_cancelled':    r'^markup\.tag\.state\.cancelled\b',
     # PROJECT & NOTE
-    '__header': r'keyword(?!\.)',
-    '__note':   r'notes(?:\.todo(?!\.))?',
+    '__header':           r'^markup\.heading\b',
+    '__note':             r'^meta\.note\b',
     # TAGS
-    '__tag':          r'(?:^|meta\.)tag(?:\.todo)?(?!\.)',
-    '__tag_today':    r'(?:tag\.todo\.)?today(?!\.)',
-    '__tag_critical': r'(?:tag\.todo\.)?critical(?!\.)',
-    '__tag_high':     r'(?:tag\.todo\.)?high(?!\.)',
-    '__tag_low':      r'(?:tag\.todo\.)?low(?!\.)',
+    '__tag_critical':     r'^markup\.tag\.priority\.critical\b',
+    '__tag_high':         r'^markup\.tag\.priority\.high\b',
+    '__tag_low':          r'^markup\.tag\.priority\.low\b',
+    '__tag_today':        r'^markup\.tag\.due\.today\b',
+    '__tag':              r'^markup\.tag\b',
     # SEPARATORS
-    '__sep':         r'separator(?:\.todo(?!\.))?',
-    '__sep_archive': r'archive(?:\.todo(?!\.))?'
+    '__sep':              r'^punctuation\.separator\.project\b',
+    '__sep_archive':      r'^punctuation\.separator\.archive\b',
 }
-allrxinone = r'|'.join([('(?P<%s>%s)' % (t, r)) for t, r in scope_to_tag.items()])
+allrxinone = r'|'.join([(r'(?P<%s>%s)' % (t, r)) for t, r in scope_to_tag.items()])
 SCOPES_REGEX = re.compile(allrxinone)
 
 
@@ -129,7 +129,7 @@ def convert_tmtheme_to_css(theme_file):
                 props_str += 'color: %s; ' % default_color
         else:
             props_str += 'color: %s; font-weight: normal; font-style: normal; ' % default_color
-        if scope == 'keyword':
+        if 'heading' in scope:
             props_str += 'width: 100%; '
 
         mo = re.search(SCOPES_REGEX, scope)
@@ -154,14 +154,14 @@ class PlainTasksConvertToHtml(PlainTasksBase):
     def runCommand(self, edit, ask=False):
         all_lines_regions = self.view.split_by_newlines(sublime.Region(0, self.view.size()))
         html_doc = []
-        patterns = {'HEADER':    'text.todo keyword.control.header.todo ',
+        patterns = {'HEADER':    'text.todo meta.heading.',
                     'EMPTY':     'text.todo ',
-                    'NOTE':      'text.todo notes.todo ',
-                    'OPEN':      'text.todo meta.item.todo.pending ',
-                    'DONE':      'text.todo meta.item.todo.completed ',
-                    'CANCELLED': 'text.todo meta.item.todo.cancelled ',
-                    'SEPARATOR': 'text.todo meta.punctuation.separator.todo ',
-                    'ARCHIVE':   'text.todo meta.punctuation.archive.todo '
+                    'NOTE':      'text.todo meta.note.',
+                    'OPEN':      'text.todo meta.task.',
+                    'DONE':      'text.todo meta.task.done.',
+                    'CANCELLED': 'text.todo meta.task.cancelled.',
+                    'SEPARATOR': 'text.todo punctuation.separator.project.',
+                    'ARCHIVE':   'text.todo punctuation.separator.archive.'
                     }
         for r in all_lines_regions:
             i = self.view.scope_name(r.a)
@@ -178,57 +178,15 @@ class PlainTasksConvertToHtml(PlainTasksBase):
                 note = '<span class="note">'
                 for s in scopes:
                     sn = self.view.scope_name(s.a)
-                    if 'italic' in sn:
+                    if 'markup.italic' in sn:
                         note += '<i>%s</i>' % html_escape(self.view.substr(s).strip('_*'))
-                    elif 'bold' in sn:
+                    elif 'markup.bold' in sn:
                         note += '<b>%s</b>' % html_escape(self.view.substr(s).strip('_*'))
-                    elif 'url' in sn:
+                    elif 'markup.underline.link' in sn:
                         note += '<a href="{0}">{0}</a>'.format(html_escape(self.view.substr(s).strip('<>')))
                     else:
                         note += html_escape(self.view.substr(s))
                 ht = note + '</span>'
-
-            elif patterns['OPEN'] in i:
-                scopes = self.extracting_scopes(self, r)
-                indent = self.view.substr(sublime.Region(r.a, scopes[0].a)) if r.a != scopes[0].a else ''
-                pending = '<span class="open">%s' % indent
-                for s in scopes:
-                    sn = self.view.scope_name(s.a)
-                    if 'bullet' in sn:
-                        pending += '<span class="bullet-pending">%s</span>' % self.view.substr(s)
-                    elif 'meta.tag' in sn:
-                        pending += '<span class="tag">%s</span>' % html_escape(self.view.substr(s))
-                    elif 'tag.todo.today' in sn:
-                        pending += '<span class="tag-today">%s</span>' % self.view.substr(s)
-                    elif 'tag.todo.critical' in sn:
-                        pending += '<span class="tag-critical">%s</span>' % self.view.substr(s)
-                    elif 'tag.todo.high' in sn:
-                        pending += '<span class="tag-high">%s</span>' % self.view.substr(s)
-                    elif 'tag.todo.low' in sn:
-                        pending += '<span class="tag-low">%s</span>' % self.view.substr(s)
-                    elif 'italic' in sn:
-                        pending += '<i>%s</i>' % html_escape(self.view.substr(s).strip('_*'))
-                    elif 'bold' in sn:
-                        pending += '<b>%s</b>' % html_escape(self.view.substr(s).strip('_*'))
-                    elif 'url' in sn:
-                        pending += '<a href="{0}">{0}</a>'.format(html_escape(self.view.substr(s).strip('<>')))
-                    else:
-                        pending += html_escape(self.view.substr(s))
-                ht = pending + '</span>'
-
-            elif patterns['DONE'] in i:
-                scopes = self.extracting_scopes(self, r)
-                indent = self.view.substr(sublime.Region(r.a, scopes[0].a)) if r.a != scopes[0].a else ''
-                done = '<span class="done">%s' % indent
-                for s in scopes:
-                    sn = self.view.scope_name(s.a)
-                    if 'bullet' in sn:
-                        done += '<span class="bullet-done">%s</span>' % self.view.substr(s)
-                    elif 'tag.todo.completed' in sn:
-                        done += '<span class="tag-done">%s</span>' % html_escape(self.view.substr(s))
-                    else:
-                        done += html_escape(self.view.substr(s))
-                ht = done + '</span>'
 
             elif patterns['CANCELLED'] in i:
                 scopes = self.extracting_scopes(self, r)
@@ -236,13 +194,55 @@ class PlainTasksConvertToHtml(PlainTasksBase):
                 cancelled = '<span class="cancelled">%s' % indent
                 for s in scopes:
                     sn = self.view.scope_name(s.a)
-                    if 'bullet' in sn:
+                    if 'punctuation.definition.task' in sn:
                         cancelled += '<span class="bullet-cancelled">%s</span>' % self.view.substr(s)
-                    elif 'tag.todo.cancelled' in sn:
+                    elif 'markup.tag.state.cancelled' in sn:
                         cancelled += '<span class="tag-cancelled">%s</span>' % html_escape(self.view.substr(s))
                     else:
                         cancelled += html_escape(self.view.substr(s))
                 ht = cancelled + '</span>'
+
+            elif patterns['DONE'] in i:
+                scopes = self.extracting_scopes(self, r)
+                indent = self.view.substr(sublime.Region(r.a, scopes[0].a)) if r.a != scopes[0].a else ''
+                done = '<span class="done">%s' % indent
+                for s in scopes:
+                    sn = self.view.scope_name(s.a)
+                    if 'punctuation.definition.task' in sn:
+                        done += '<span class="bullet-done">%s</span>' % self.view.substr(s)
+                    elif 'markup.tag.state.done' in sn:
+                        done += '<span class="tag-done">%s</span>' % html_escape(self.view.substr(s))
+                    else:
+                        done += html_escape(self.view.substr(s))
+                ht = done + '</span>'
+
+            elif patterns['OPEN'] in i:
+                scopes = self.extracting_scopes(self, r)
+                indent = self.view.substr(sublime.Region(r.a, scopes[0].a)) if r.a != scopes[0].a else ''
+                pending = '<span class="open">%s' % indent
+                for s in scopes:
+                    sn = self.view.scope_name(s.a)
+                    if 'punctuation.definition.task' in sn:
+                        pending += '<span class="bullet-pending">%s</span>' % self.view.substr(s)
+                    elif 'markup.tag.due.today' in sn:
+                        pending += '<span class="tag-today">%s</span>' % self.view.substr(s)
+                    elif 'markup.tag.priority.critical' in sn:
+                        pending += '<span class="tag-critical">%s</span>' % self.view.substr(s)
+                    elif 'markup.tag.priority.high' in sn:
+                        pending += '<span class="tag-high">%s</span>' % self.view.substr(s)
+                    elif 'markup.tag.priority.low' in sn:
+                        pending += '<span class="tag-low">%s</span>' % self.view.substr(s)
+                    elif 'markup.tag' in sn:
+                        pending += '<span class="tag">%s</span>' % html_escape(self.view.substr(s))
+                    elif 'markup.italic' in sn:
+                        pending += '<i>%s</i>' % html_escape(self.view.substr(s).strip('_*'))
+                    elif 'markup.bold' in sn:
+                        pending += '<b>%s</b>' % html_escape(self.view.substr(s).strip('_*'))
+                    elif 'markup.underline.link' in sn:
+                        pending += '<a href="{0}">{0}</a>'.format(html_escape(self.view.substr(s).strip('<>')))
+                    else:
+                        pending += html_escape(self.view.substr(s))
+                ht = pending + '</span>'
 
             elif patterns['SEPARATOR'] in i:
                 ht = '<span class="sep">%s</span>' % html_escape(self.view.substr(r))

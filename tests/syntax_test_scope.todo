@@ -1,0 +1,243 @@
+// SYNTAX TEST "Packages/PlainTasks/PlainTasks.sublime-syntax"
+
+// Headers
+// =======
+
+Header:
+// <- meta.heading.todo markup.heading.todo entity.name.section.heading.todo
+//^^^^^^ meta.heading.todo
+//^^^^ entity.name.section.heading.todo
+//    ^ punctuation.separator.heading.todo
+
+# Header:
+// <- meta.heading.todo markup.heading.todo punctuation.definition.heading.todo
+//^^^^^^^^ meta.heading.todo
+//^^^^^^ entity.name.section.heading.todo
+//      ^ punctuation.separator.heading.todo
+
+Header Text [personal] - (notes): @critical
+// <- meta.heading.todo markup.heading.todo entity.name.section.heading.todo
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.heading.todo
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ entity.name.section.heading.todo
+//                              ^ punctuation.separator.heading.todo
+//                                ^^^^^^^^^ markup.tag.priority.critical.todo
+
+@ No Header:
+// <- - meta.heading - markup.heading
+
+// Notes
+// =====
+
+  Any other _italic_ or __bold__ string is a note.
+// <- meta.note.todo
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.note.todo
+//          ^^^^^^^^ markup.italic.todo
+//                      ^^^^^^^^ markup.bold.todo
+
+  <dir/file.ext>
+//^^^^^^^^^^^^^^ meta.link.url.todo
+//^ punctuation.definition.link.begin.todo
+// ^^^^^^^^^^^^ markup.underline.link.url.todo
+//             ^ punctuation.definition.link.end.todo
+
+  <domain.com>
+//^^^^^^^^^^^^ meta.link.url.todo
+//^ punctuation.definition.link.begin.todo
+// ^^^^^^^^^^ markup.underline.link.url.todo
+//           ^ punctuation.definition.link.end.todo
+
+  <https://domain.com>
+//^^^^^^^^^^^^^^^^^^^^ meta.link.url.todo
+//^ punctuation.definition.link.begin.todo
+// ^^^^^^^^^^^^^^^^^^ markup.underline.link.url.todo
+//                   ^ punctuation.definition.link.end.todo
+
+  <git+https://domain.com/path#anchor?param=value&arg2=value>
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.link.url.todo
+//^ punctuation.definition.link.begin.todo
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ markup.underline.link.url.todo
+//                                                          ^ punctuation.definition.link.end.todo
+
+// Tasks
+// =====
+
+  □
+// <- meta.task.pending.todo
+//^^ meta.task.pending.todo
+//^ punctuation.definition.task.pending.todo
+
+  □ task pending
+// <- meta.task.pending.todo
+//^^^^^^^^^^^^^^^ meta.task.pending.todo - markup
+//^ punctuation.definition.task.pending.todo
+
+  □ task@my-home
+// <- meta.task.pending.todo
+//^^^^^^^^^^^^^^^ meta.task.pending.todo - markup
+//^ punctuation.definition.task.pending.todo
+
+  □ task @started
+// <- meta.task.started.todo
+//^^^^^^^^^^^^^^^^ meta.task.started.todo
+//^ punctuation.definition.task.pending.todo
+//       ^^^^^^^^ markup.tag.state.started.todo
+
+  [ ] task pending
+// <- meta.task.pending.todo
+//^^^^^^^^^^^^^^^^^ meta.task.pending.todo - markup
+//^^^ punctuation.definition.task.pending.todo
+
+  ✓
+// <- meta.task.done.todo
+//^^ meta.task.done.todo
+//^ punctuation.definition.task.done.todo
+
+  ✓ task done
+// <- meta.task.done.todo
+//^^^^^^^^^^^^ meta.task.done.todo
+//^ punctuation.definition.task.done.todo
+
+  ✓ task@my-home
+// <- meta.task.done.todo
+//^^^^^^^^^^^^^^^ meta.task.done.todo - markup
+//^ punctuation.definition.task.done.todo
+
+  [x] task done
+// <- meta.task.done.todo
+//^^^^^^^^^^^^^^ meta.task.done.todo - markup
+//^^^ punctuation.definition.task.done.todo
+
+  ×
+// <- meta.task.cancelled.todo
+//^^ meta.task.cancelled.todo
+//^ punctuation.definition.task.cancelled.todo
+
+  × task cancelled
+// <- meta.task.cancelled.todo
+//^^^^^^^^^^^^^^^^^ meta.task.cancelled.todo
+//^ punctuation.definition.task.cancelled.todo
+
+  [-] task cancelled
+// <- meta.task.cancelled.todo
+//^^^^^^^^^^^^^^^^^^^ meta.task.cancelled.todo - markup
+//^^^ punctuation.definition.task.cancelled.todo
+
+
+// Priority Tags
+// =============
+
+  □ task @critical ✭critical
+//       ^^^^^^^^^ markup.tag.priority.critical.todo
+//                 ^^^^^^^^^ meta.task.pending.todo markup.tag.priority.critical.todo
+
+  □ task @high ✭high
+//       ^^^^^ markup.tag.priority.high.todo
+//             ^^^^^ markup.tag.priority.high.todo
+
+  □ task @low ✭low
+//       ^^^^ markup.tag.priority.low.todo
+//            ^^^^ markup.tag.priority.low.todo
+
+
+// Due Tags
+// ========
+
+  □ teask @created(26-07-01 12:32)
+//        ^^^^^^^^^^^^^^^^^^^^^^^^ meta.tag.created.todo
+//        ^^^^^^^^ markup.tag.created.todo
+//                ^^^^^^^^^^^^^^^^ meta.parens.todo
+//                ^ punctuation.section.parens.begin.todo
+//                 ^^^^^^^^^^^^^^ constant.numeric.timestamp.todo
+//                               ^ punctuation.section.parens.end.todo
+
+  □ task @today ✭TODAY ✭ᴛᴏᴅᴀʏ
+//       ^^^^^^ markup.tag.due.today.todo
+//              ^^^^^^ markup.tag.due.today.todo
+//                     ^^^^^^ markup.tag.due.today.todo
+
+  □ task @due(26-07-30 14:57)
+//       ^^^^^^^^^^^^^^^^^^^^ meta.tag.due.date.todo
+//       ^^^^ markup.tag.due.date.todo
+//           ^^^^^^^^^^^^^^^^ meta.parens.todo
+//           ^ punctuation.section.parens.begin.todo
+//            ^^^^^^^^^^^^^^ constant.numeric.timestamp.todo
+//                          ^ punctuation.section.parens.end.todo
+
+
+// State Tags
+// ==========
+
+  □ task @cancelled
+//       ^^^^^^^^^^ markup.tag.state.cancelled.todo
+  □ task @cancelled (26-07-30 14:57)
+//       ^^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.tag.state.cancelled.todo
+//       ^^^^^^^^^^ markup.tag.state.cancelled.todo
+//                  ^^^^^^^^^^^^^^^^ meta.parens.todo
+//                  ^ punctuation.section.parens.begin.todo
+//                   ^^^^^^^^^^^^^^ constant.numeric.timestamp.todo
+//                                 ^ punctuation.section.parens.end.todo
+
+  ✓ task @done
+//       ^^^^^ markup.tag.state.done.todo
+  ✓ task @done (26-07-30 14:57)
+//       ^^^^^^^^^^^^^^^^^^^^^^ meta.tag.state.done.todo
+//       ^^^^^ markup.tag.state.done.todo
+//             ^^^^^^^^^^^^^^^^ meta.parens.todo
+//             ^ punctuation.section.parens.begin.todo
+//              ^^^^^^^^^^^^^^ constant.numeric.timestamp.todo
+//                            ^ punctuation.section.parens.end.todo
+
+  □ task @start
+//       ^^^^^^ markup.tag.state.started.todo
+  □ task @start (26-07-30 14:57)
+//       ^^^^^^^^^^^^^^^^^^^^^^^ meta.tag.state.started.todo
+//       ^^^^^^ markup.tag.state.started.todo
+//              ^^^^^^^^^^^^^^^^ meta.parens.todo
+//              ^ punctuation.section.parens.begin.todo
+//               ^^^^^^^^^^^^^^ constant.numeric.timestamp.todo
+//                             ^ punctuation.section.parens.end.todo
+  □ task @started
+//       ^^^^^^^^ markup.tag.state.started.todo
+  □ task @started (26-07-30 14:57)
+//       ^^^^^^^^^^^^^^^^^^^^^^^^^ meta.tag.state.started.todo
+//       ^^^^^^^^ markup.tag.state.started.todo
+//                ^^^^^^^^^^^^^^^^ meta.parens.todo
+//                ^ punctuation.section.parens.begin.todo
+//                 ^^^^^^^^^^^^^^ constant.numeric.timestamp.todo
+//                               ^ punctuation.section.parens.end.todo
+
+
+// Other Tags
+// ==========
+
+  □ task @important
+//       ^^^^^^^^^^ markup.tag.other.todo
+
+  □ task @project(TODO)
+//       ^^^^^^^^^^^^^^ markup.tag.other.todo
+
+  □ task @bug
+//       ^^^^ markup.tag.other.todo
+
+  □ task @feature
+//       ^^^^^^^^ markup.tag.other.todo
+
+
+// Separators
+// ==========
+
+------------------------------
+// <- punctuation.separator.project.todo
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^ punctuation.separator.project.todo
+
+--- ✄ -----------------------
+// <- punctuation.separator.project.todo
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^ punctuation.separator.project.todo
+
+
+// Archive Separators
+// ==================
+
+______________________________
+// <- punctuation.separator.archive.todo
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^ punctuation.separator.archive.todo

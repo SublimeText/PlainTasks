@@ -21,7 +21,7 @@
 	},
 	{ "keys": ["tab"], "command": "plain_tasks_re_calculate_time_for_tasks", "context":
 		[
-			{ "key": "selector", "operator": "equal", "operand": "text.todo meta.tag.todo.completed, text.todo meta.tag.todo.cancelled" }
+			{ "key": "selector", "operator": "equal", "operand": "text.todo meta.tag.state.done, text.todo meta.tag.state.cancelled" }
 		]
 	},
 	{ "keys": ["tab"], "command": "plain_tasks_replace_short_date", "context":

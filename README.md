@@ -189,9 +189,9 @@ or go to `Main Menu → Preferences → Package Settings → PlainTasks → Sett
 | **decimal_minutes**            | false            | If true, minutes in lasted/wasted tags will be percent of hour, e.g. 1.50 instead of 1:30
 | **highlight_past_due**         | true             | If true, highlight past, soon, and invalid `@due(something)`
 | **highlight_due_soon**         | 24               | Hours as int, threshold to define which `@due` will be soon
-| **scope_past_due**             | `tring.other.tag.todo.critical` | Any scope, define color for past `@due`
-| **scope_due_soon**             | `tring.other.tag.todo.high`     | Any scope, define color for `@due` will be soon
-| **scope_misformatted**         | `tring.other.tag.todo.low`      | Any scope, define color for `@due` mismatch **date_format**
+| **scope_past_due**             | `markup.tag.priority.critical` | Any scope, define color for past `@due`
+| **scope_due_soon**             | `markup.tag.priority.high`     | Any scope, define color for `@due` will be soon
+| **scope_misformatted**         | `markup.tag.priority.low`      | Any scope, define color for `@due` mismatch **date_format**
 
 ### Archive Settings
 

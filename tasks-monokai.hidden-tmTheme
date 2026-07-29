@@ -46,7 +46,7 @@
 			<key>name</key>
 			<string>Tags</string>
 			<key>scope</key>
-			<string>meta.tag.todo</string>
+			<string>meta.tag - meta.task.done - meta.task.cancelled</string>
 			<key>settings</key>
 			<dict>
 				<key>fontStyle</key>
@@ -57,9 +57,24 @@
 		</dict>
 		<dict>
 			<key>name</key>
+			<string>Tag Dates</string>
+			<key>scope</key>
+			<string>meta.tag constant.numeric</string>
+			<key>settings</key>
+			<dict>
+				<key>background</key>
+				<string>#222222</string>
+				<key>foreground</key>
+				<string>#75715E</string>
+				<key>fontStyle</key>
+				<string>italic</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
 			<string>Notes</string>
 			<key>scope</key>
-			<string>notes.todo</string>
+			<string>meta.note</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -81,7 +96,7 @@
 			<key>name</key>
 			<string>Done bullet</string>
 			<key>scope</key>
-			<string>punctuation.definition.bullet.completed</string>
+			<string>punctuation.definition.task.done</string>
 			<key>settings</key>
 			<dict>
 				<key>fontStyle</key>
@@ -94,7 +109,7 @@
 			<key>name</key>
 			<string>Cancelled bullet</string>
 			<key>scope</key>
-			<string>punctuation.definition.bullet.cancelled</string>
+			<string>punctuation.definition.task.cancelled</string>
 			<key>settings</key>
 			<dict>
 				<key>fontStyle</key>
@@ -107,7 +122,20 @@
 			<key>name</key>
 			<string>Cancelled task</string>
 			<key>scope</key>
-			<string>meta.item.todo.cancelled</string>
+			<string>meta.task.cancelled</string>
+			<key>settings</key>
+			<dict>
+				<key>fontStyle</key>
+				<string>italic</string>
+				<key>foreground</key>
+				<string>#75715E</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Completed task</string>
+			<key>scope</key>
+			<string>meta.task.done</string>
 			<key>settings</key>
 			<dict>
 				<key>fontStyle</key>
@@ -120,7 +148,7 @@
 			<key>name</key>
 			<string>Done meta info</string>
 			<key>scope</key>
-			<string>meta.tag.todo.completed</string>
+			<string>markup.tag.state.done</string>
 			<key>settings</key>
 			<dict>
 				<key>fontStyle</key>
@@ -133,7 +161,7 @@
 			<key>name</key>
 			<string>Cancel meta info</string>
 			<key>scope</key>
-			<string>meta.tag.todo.cancelled</string>
+			<string>markup.tag.state.cancelled</string>
 			<key>settings</key>
 			<dict>
 				<key>fontStyle</key>
@@ -144,9 +172,20 @@
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Keyword</string>
+			<string>Headings</string>
 			<key>scope</key>
-			<string>keyword</string>
+			<string>meta.heading</string>
+			<key>settings</key>
+			<dict>
+				<key>background</key>
+				<string>#00000010</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Headings</string>
+			<key>scope</key>
+			<string>markup.heading</string>
 			<key>settings</key>
 			<dict>
 				<key>background</key>
@@ -161,7 +200,7 @@
 			<key>name</key>
 			<string>Archive Separator</string>
 			<key>scope</key>
-			<string>meta.punctuation.archive.todo</string>
+			<string>punctuation.separator.archive</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -172,7 +211,7 @@
 			<key>name</key>
 			<string>Separator</string>
 			<key>scope</key>
-			<string>meta.punctuation.separator.todo</string>
+			<string>punctuation.separator.project</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -194,7 +233,7 @@
 			<key>name</key>
 			<string>Italic</string>
 			<key>scope</key>
-			<string>todo.italic</string>
+			<string>markup.italic</string>
 			<key>settings</key>
 			<dict>
 				<key>fontStyle</key>
@@ -218,7 +257,7 @@
 			<key>name</key>
 			<string>Bold</string>
 			<key>scope</key>
-			<string>todo.bold</string>
+			<string>markup.bold</string>
 			<key>settings</key>
 			<dict>
 				<key>fontStyle</key>
@@ -229,7 +268,7 @@
 			<key>name</key>
 			<string>URL</string>
 			<key>scope</key>
-			<string>todo.url</string>
+			<string>markup.underline.link.url</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
@@ -483,7 +522,7 @@
 			<key>name</key>
 			<string>Today</string>
 			<key>scope</key>
-			<string>string.other.tag.todo.today</string>
+			<string>markup.tag.due.today</string>
 			<key>settings</key>
 			<dict>
 				<key>background</key>
@@ -498,7 +537,7 @@
 			<key>name</key>
 			<string>High</string>
 			<key>scope</key>
-			<string>string.other.tag.todo.high</string>
+			<string>markup.tag.priority.high</string>
 			<key>settings</key>
 			<dict>
 				<key>background</key>
@@ -513,7 +552,7 @@
 			<key>name</key>
 			<string>Low</string>
 			<key>scope</key>
-			<string>string.other.tag.todo.low</string>
+			<string>markup.tag.priority.low</string>
 			<key>settings</key>
 			<dict>
 				<key>background</key>
@@ -528,7 +567,7 @@
 			<key>name</key>
 			<string>Critical</string>
 			<key>scope</key>
-			<string>string.other.tag.todo.critical</string>
+			<string>markup.tag.priority.critical</string>
 			<key>settings</key>
 			<dict>
 				<key>background</key>

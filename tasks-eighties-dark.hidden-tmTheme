@@ -32,7 +32,7 @@
 			</dict>
 			<dict>
 				<key>name</key><string>Tags</string>
-				<key>scope</key><string>meta.tag.todo</string>
+				<key>scope</key><string>meta.tag - meta.task.done - meta.task.cancelled</string>
 				<key>settings</key>
 				<dict>
 					<key>foreground</key><string>#f99157</string>
@@ -40,8 +40,18 @@
 				</dict>
 			</dict>
 			<dict>
+				<key>name</key><string>Tag Dates</string>
+				<key>scope</key><string>meta.tag constant.numeric</string>
+				<key>settings</key>
+				<dict>
+					<key>background</key><string>#2d2d2d</string>
+					<key>foreground</key><string>#747369</string>
+					<key>fontStyle</key><string>bold</string>
+				</dict>
+			</dict>
+			<dict>
 				<key>name</key><string>Notes</string>
-				<key>scope</key><string>notes.todo</string>
+				<key>scope</key><string>meta.note</string>
 				<key>settings</key>
 				<dict>
 					<key>foreground</key><string>#515151</string>
@@ -57,7 +67,7 @@
 			</dict>
 			<dict>
 				<key>name</key><string>Done bullet</string>
-				<key>scope</key><string>punctuation.definition.bullet.completed</string>
+				<key>scope</key><string>punctuation.definition.task.done</string>
 				<key>settings</key>
 				<dict>
 					<key>foreground</key><string>#99cc99</string>
@@ -66,7 +76,7 @@
 			</dict>
 			<dict>
 				<key>name</key><string>Pending bullet</string>
-				<key>scope</key><string>punctuation.definition.bullet.pending</string>
+				<key>scope</key><string>punctuation.definition.task.pending</string>
 				<key>settings</key>
 				<dict>
 					<key>foreground</key><string>#6699cc</string>
@@ -75,7 +85,7 @@
 			</dict>
 			<dict>
 				<key>name</key><string>Cancelled bullet</string>
-				<key>scope</key><string>punctuation.definition.bullet.cancelled</string>
+				<key>scope</key><string>punctuation.definition.task.cancelled</string>
 				<key>settings</key>
 				<dict>
 					<key>foreground</key><string>#f2777a</string>
@@ -84,7 +94,16 @@
 			</dict>
 			<dict>
 				<key>name</key><string>Cancelled task</string>
-				<key>scope</key><string>meta.item.todo.cancelled</string>
+				<key>scope</key><string>meta.task.cancelled</string>
+				<key>settings</key>
+				<dict>
+					<key>foreground</key><string>#747369</string>
+					<key>fontStyle</key><string>italic</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>name</key><string>completed task</string>
+				<key>scope</key><string>meta.task.done</string>
 				<key>settings</key>
 				<dict>
 					<key>foreground</key><string>#747369</string>
@@ -93,7 +112,7 @@
 			</dict>
 			<dict>
 				<key>name</key><string>Done meta info</string>
-				<key>scope</key><string>meta.tag.todo.completed</string>
+				<key>scope</key><string>markup.tag.state.done</string>
 				<key>settings</key>
 				<dict>
 					<key>foreground</key><string>#d3d0c850</string>
@@ -102,7 +121,7 @@
 			</dict>
 			<dict>
 				<key>name</key><string>Cancel meta info</string>
-				<key>scope</key><string>meta.tag.todo.cancelled</string>
+				<key>scope</key><string>markup.tag.state.cancelled</string>
 				<key>settings</key>
 				<dict>
 					<key>foreground</key><string>#d3d0c850</string>
@@ -110,18 +129,26 @@
 				</dict>
 			</dict>
 			<dict>
-				<key>name</key><string>Keyword</string>
-				<key>scope</key><string>keyword</string>
+				<key>name</key><string>Headings</string>
+				<key>scope</key><string>meta.heading</string>
 				<key>settings</key>
 				<dict>
-					<key>foreground</key><string>#f99157</string>
 					<key>background</key><string>#00000010</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>name</key><string>Headings</string>
+				<key>scope</key><string>markup.heading</string>
+				<key>settings</key>
+				<dict>
+					<key>background</key><string>#00000010</string>
+					<key>foreground</key><string>#f99157</string>
 					<key>fontStyle</key><string>bold underline</string>
 				</dict>
 			</dict>
 			<dict>
 				<key>name</key><string>Archive Separator</string>
-				<key>scope</key><string>meta.punctuation.archive.todo</string>
+				<key>scope</key><string>punctuation.separator.archive</string>
 				<key>settings</key>
 				<dict>
 					<key>foreground</key><string>#515151</string>
@@ -129,7 +156,7 @@
 			</dict>
 			<dict>
 				<key>name</key><string>Separator</string>
-				<key>scope</key><string>meta.punctuation.separator.todo</string>
+				<key>scope</key><string>punctuation.separator.project</string>
 				<key>settings</key>
 				<dict>
 					<key>foreground</key><string>#515151</string>
@@ -145,7 +172,7 @@
 			</dict>
 			<dict>
 				<key>name</key><string>Italic</string>
-				<key>scope</key><string>todo.italic</string>
+				<key>scope</key><string>markup.italic</string>
 				<key>settings</key>
 				<dict>
 					<key>fontStyle</key><string>italic</string>
@@ -162,7 +189,7 @@
 			</dict>
 			<dict>
 				<key>name</key><string>Bold</string>
-				<key>scope</key><string>todo.bold</string>
+				<key>scope</key><string>markup.bold</string>
 				<key>settings</key>
 				<dict>
 					<key>fontStyle</key><string>bold</string>
@@ -172,7 +199,7 @@
 				<key>name</key>
 				<string>URL</string>
 				<key>scope</key>
-				<string>todo.url</string>
+				<string>markup.underline.link.url</string>
 				<key>settings</key>
 				<dict>
 					<key>foreground</key>
@@ -350,7 +377,7 @@
 			</dict>
 			<dict>
 				<key>name</key><string>Today</string>
-				<key>scope</key><string>string.other.tag.todo.today</string>
+				<key>scope</key><string>markup.tag.due.today</string>
 				<key>settings</key>
 				<dict>
 					<key>background</key><string>#f2f0ce</string>
@@ -362,7 +389,7 @@
 				<key>name</key>
 				<string>High</string>
 				<key>scope</key>
-				<string>string.other.tag.todo.high</string>
+				<string>markup.tag.priority.high</string>
 				<key>settings</key>
 				<dict>
 					<key>background</key>
@@ -377,7 +404,7 @@
 				<key>name</key>
 				<string>Low</string>
 				<key>scope</key>
-				<string>string.other.tag.todo.low</string>
+				<string>markup.tag.priority.low</string>
 				<key>settings</key>
 				<dict>
 					<key>background</key>
@@ -392,7 +419,7 @@
 				<key>name</key>
 				<string>Critical</string>
 				<key>scope</key>
-				<string>string.other.tag.todo.critical</string>
+				<string>markup.tag.priority.critical</string>
 				<key>settings</key>
 				<dict>
 					<key>background</key>

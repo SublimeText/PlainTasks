@@ -35,13 +35,13 @@
 	{ "keys": ["*"], "command": "plain_tasks_remove_bold",  "context":
 		[
 			{ "key": "setting.auto_match_enabled", "operator": "equal", "operand": true},
-			{ "key": "selector", "operator": "equal", "operand": "text.todo todo.bold"}
+			{ "key": "selector", "operator": "equal", "operand": "text.todo markup.bold"}
 		]
 	},
 	{ "keys": ["_"], "command": "plain_tasks_remove_bold", "context":
 		[
 			{ "key": "setting.auto_match_enabled", "operator": "equal", "operand": true},
-			{ "key": "selector", "operator": "equal", "operand": "text.todo todo.bold"}
+			{ "key": "selector", "operator": "equal", "operand": "text.todo markup.bold"}
 		]
 	},
 	// same for single selection, we probably should fix it in syntax: **** defined as italic, but in fact it is [supposed to be] bold
@@ -51,7 +51,7 @@
 			{ "key": "selection_empty", "operator": "equal", "operand": true, "match_all": true },
 			{ "key": "preceding_text", "operator": "regex_contains", "operand": "\\**$", "match_all": true },
 			{ "key": "following_text", "operator": "regex_contains", "operand": "^\\**", "match_all": true },
-			{ "key": "selector", "operator": "equal", "operand": "text.todo todo.italic"}
+			{ "key": "selector", "operator": "equal", "operand": "text.todo markup.italic"}
 		]
 	},
 	{ "keys": ["_"], "command": "plain_tasks_remove_bold",  "context":
@@ -60,7 +60,7 @@
 			{ "key": "selection_empty", "operator": "equal", "operand": true, "match_all": true },
 			{ "key": "preceding_text", "operator": "regex_contains", "operand": "__$", "match_all": true },
 			{ "key": "following_text", "operator": "regex_contains", "operand": "^__", "match_all": true },
-			{ "key": "selector", "operator": "equal", "operand": "text.todo todo.italic"}
+			{ "key": "selector", "operator": "equal", "operand": "text.todo markup.italic"}
 		]
 	},
 	// save keystroke on backspace

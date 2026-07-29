@@ -83,16 +83,16 @@ class PlainTasksNewCommand(PlainTasksBase):
             empty_line     = re.match(r'^(\s+)$', self.view.substr(line))
             current_scope  = self.view.scope_name(line.a)
             eol = line.b  # need for ST3 when new content has line break
-            if 'item' in current_scope:
+            if 'meta.task' in current_scope:
                 grps = not_empty_line.groups()
                 line_contents = self.view.substr(line) + '\n' + grps[0] + self.open_tasks_bullet + self.tasks_bullet_space
-            elif 'header' in current_scope and line_contents and not header_to_task:
+            elif 'meta.heading' in current_scope and line_contents and not header_to_task:
                 grps = not_empty_line.groups()
                 line_contents = self.view.substr(line) + '\n' + grps[0] + self.before_tasks_bullet_spaces + self.open_tasks_bullet + self.tasks_bullet_space
-            elif 'separator' in current_scope:
+            elif 'punctuation.separator' in current_scope:
                 grps = not_empty_line.groups()
                 line_contents = self.view.substr(line) + '\n' + grps[0] + self.before_tasks_bullet_spaces + self.open_tasks_bullet + self.tasks_bullet_space
-            elif not ('header' and 'separator') in current_scope or header_to_task:
+            elif not ('meta.heading' and 'punctuation.separator') in current_scope or header_to_task:
                 eol = None
                 if not_empty_line:
                     grps = not_empty_line.groups()
@@ -190,7 +190,7 @@ class PlainTasksCompleteCommand(PlainTasksBase):
                         'now': now,
                         'eol': line.a + len(replacement) + len_dle}
                 )
-            elif 'header' in current_scope:
+            elif 'meta.heading' in current_scope:
                 eol = self.view.insert(edit, line.end(), done_line_end)
                 self.view.run_command(
                     'plain_tasks_calculate_time_for_task', {
@@ -202,7 +202,7 @@ class PlainTasksCompleteCommand(PlainTasksBase):
                 indent = re.match(r'^(\s*)\S', line_contents)
                 self.view.insert(edit, line.begin() + len(indent.group(1)), '%s ' % self.done_tasks_bullet)
                 self.view.run_command('plain_tasks_calculate_total_time_for_project', {'start': line.a})
-            elif 'completed' in current_scope:
+            elif 'done' in current_scope:
                 grps = done_matches.groups()
                 parentheses = check_parentheses(self.date_format, grps[4] or '')
                 replacement = '%s%s%s%s' % (grps[0], self.open_tasks_bullet, grps[2], parentheses)
@@ -241,7 +241,7 @@ class PlainTasksInjectDueDateCommand(PlainTasksBase):
             line_contents = self.view.substr(line)
             current_scope = self.view.scope_name(line.begin())
             due_matches = re.match(due_re, line_contents)
-            if ('item' in current_scope or 'header' in current_scope) and not due_matches:
+            if ('meta.task' in current_scope or 'meta.heading' in current_scope) and not due_matches:
                 self.view.insert(edit, line.end(), ' @due()')
                 point = line.end() + 6
         if point != -1:
@@ -262,7 +262,7 @@ class PlainTasksSortByDueDateAndPriorityCommand(PlainTasksBase):
 
         for project in regions:
             project_scope = self.view.scope_name(project.begin())
-            if not 'header' in project_scope:
+            if not 'meta.heading' in project_scope:
                 continue
             project_block = self.view.indented_region(project.end() + 1)
             if project_block.empty():
@@ -279,9 +279,9 @@ class PlainTasksSortByDueDateAndPriorityCommand(PlainTasksBase):
                 scope = self.view.scope_name(pos)
                 indentation = self.view.indentation_level(pos)
 
-                if scope == 'text.todo notes.todo ' and task is None:
+                if scope == 'text.todo meta.note.todo ' and task is None:
                     pass
-                elif ('item' in scope or 'header' in scope) and (task is None or first_task_indentation == indentation):
+                elif ('meta.task' in scope or 'meta.heading' in scope) and (task is None or first_task_indentation == indentation):
                     task = self.Task()
                     task.region = line
                     if first_task_pos is None:
@@ -357,7 +357,7 @@ class PlainTasksCancelCommand(PlainTasksBase):
                         'eol': line.a + len(replacement) + len_cle,
                         'tag': 'wasted'}
                 )
-            elif 'header' in current_scope:
+            elif 'meta.heading' in current_scope:
                 eol = self.view.insert(edit, line.end(), canc_line_end)
                 self.view.run_command(
                     'plain_tasks_calculate_time_for_task', {
@@ -370,7 +370,7 @@ class PlainTasksCancelCommand(PlainTasksBase):
                 indent = re.match(r'^(\s*)\S', line_contents)
                 self.view.insert(edit, line.begin() + len(indent.group(1)), '%s ' % self.canc_tasks_bullet)
                 self.view.run_command('plain_tasks_calculate_total_time_for_project', {'start': line.a})
-            elif 'completed' in current_scope:
+            elif 'done' in current_scope:
                 sublime.status_message('You cannot cancel what have been done, can you?')
                 # grps = done_matches.groups()
                 # parentheses = check_parentheses(self.date_format, grps[4] or '')
@@ -395,8 +395,8 @@ class PlainTasksCancelCommand(PlainTasksBase):
 
 class PlainTasksArchiveCommand(PlainTasksBase):
     def runCommand(self, edit, partial=False):
-        rds = 'meta.item.todo.completed'
-        rcs = 'meta.item.todo.cancelled'
+        rds = 'meta.task.done'
+        rcs = 'meta.task.cancelled'
 
         # finding archive section
         archive_pos = self.view.find(self.archive_name, 0, sublime.LITERAL)
@@ -486,7 +486,7 @@ class PlainTasksArchiveCommand(PlainTasksBase):
 
     def get_task_note(self, task, tasks):
         note_line = task.end() + 1
-        while self.view.scope_name(note_line) == 'text.todo notes.todo ':
+        while self.view.scope_name(note_line) == 'text.todo meta.note.todo ':
             note = self.view.line(note_line)
             if note not in tasks:
                 tasks.append(note)
@@ -510,7 +510,7 @@ class PlainTasksArchiveCommand(PlainTasksBase):
         for region in self.view.sel():
             for l in self.view.lines(region):
                 line = self.view.line(l)
-                if ('completed' in self.view.scope_name(line.a)) or ('cancelled' in self.view.scope_name(line.a)):
+                if ('done' in self.view.scope_name(line.a)) or ('cancelled' in self.view.scope_name(line.a)):
                     all_tasks.append(line)
                     self.get_task_note(line, all_tasks)
         return all_tasks
@@ -781,7 +781,7 @@ class PlainTasksSortByDate(PlainTasksBase):
             notes = []
             for ind, task in enumerate(tasks):
                 note_line = task.end() + 1
-                while self.view.scope_name(note_line) == 'text.todo notes.todo ':
+                while self.view.scope_name(note_line) == 'text.todo meta.note.todo ':
                     note = self.view.line(note_line)
                     notes.append(note)
                     tasks_prefixed_date[ind] += '\n' + self.view.substr(note)
@@ -835,7 +835,7 @@ class PlainTasksStatsStatus(sublime_plugin.EventListener):
                 scope = view.scope_name(t)
                 if 'pending' in scope and t not in pend:
                     pend.append(t)
-                elif 'completed' in scope and t not in done:
+                elif 'done' in scope and t not in done:
                     done.append(t)
                 elif 'cancelled' in scope and t not in canc:
                     canc.append(t)
@@ -844,13 +844,13 @@ class PlainTasksStatsStatus(sublime_plugin.EventListener):
         ignore_archive = view.settings().get('stats_ignore_archive', False)
         if ignore_archive:
             archive_pos = view.find(view.settings().get('archive_name', 'Archive:'), 0, sublime.LITERAL)
-            pend = len([i for i in view.find_by_selector('meta.item.todo.pending') if i.a < (archive_pos.a if archive_pos and archive_pos.a > 0 else view.size())])
-            done = len([i for i in view.find_by_selector('meta.item.todo.completed') if i.a < (archive_pos.a if archive_pos and archive_pos.a > 0 else view.size())])
-            canc = len([i for i in view.find_by_selector('meta.item.todo.cancelled') if i.a < (archive_pos.a if archive_pos and archive_pos.a > 0 else view.size())])
+            pend = len([i for i in view.find_by_selector('meta.task.pending') if i.a < (archive_pos.a if archive_pos and archive_pos.a > 0 else view.size())])
+            done = len([i for i in view.find_by_selector('meta.task.done') if i.a < (archive_pos.a if archive_pos and archive_pos.a > 0 else view.size())])
+            canc = len([i for i in view.find_by_selector('meta.task.cancelled') if i.a < (archive_pos.a if archive_pos and archive_pos.a > 0 else view.size())])
         else:
-            pend = len(view.find_by_selector('meta.item.todo.pending'))
-            done = len(view.find_by_selector('meta.item.todo.completed'))
-            canc = len(view.find_by_selector('meta.item.todo.cancelled'))
+            pend = len(view.find_by_selector('meta.task.pending'))
+            done = len(view.find_by_selector('meta.task.done'))
+            canc = len(view.find_by_selector('meta.task.cancelled'))
         allt = pend + done + canc
         percent  = ((done+canc)/float(allt))*100 if allt else 0
         factor   = int(round(percent/10)) if percent<90 else int(percent/10)
@@ -891,7 +891,7 @@ class PlainTasksCopyStats(PlainTasksEnabled):
 
 class PlainTasksArchiveOrgCommand(PlainTasksBase):
     def runCommand(self, edit):
-        # Archive the curent subtree to our archive file, not just completed tasks.
+        # Archive the curent subtree to our archive file, not just done tasks.
         # For now, it's mapped to ctrl-shift-o or super-shift-o
 
         # TODO: Mark any tasks found as complete, or maybe warn.
@@ -984,7 +984,7 @@ class PlainTasksFoldToTags(PlainTasksFold):
     TAG = r'(?u)@\w+'
 
     def run(self, edit):
-        tag_sels = [s for s in list(self.view.sel()) if 'tag.todo' in self.view.scope_name(s.a)]
+        tag_sels = [s for s in list(self.view.sel()) if 'meta.tag' in self.view.scope_name(s.a)]
         if not tag_sels:
             sublime.status_message('Cursor(s) must be placed on tag(s)')
             return
@@ -1032,10 +1032,10 @@ class PlainTasksAddGutterIconsForTags(sublime_plugin.EventListener):
         if not any((icon_critical, icon_high, icon_low, icon_today)):
             return
 
-        critical = 'string.other.tag.todo.critical'
-        high = 'string.other.tag.todo.high'
-        low = 'string.other.tag.todo.low'
-        today = 'string.other.tag.todo.today'
+        critical = 'markup.tag.priority.critical'
+        high = 'markup.tag.priority.high'
+        low = 'markup.tag.priority.low'
+        today = 'markup.tag.due.today'
         r_critical = view.find_by_selector(critical)
         r_high = view.find_by_selector(high)
         r_low = view.find_by_selector(low)
@@ -1081,9 +1081,9 @@ class PlainTasksHover(sublime_plugin.ViewEventListener):
     archivetofile = '<a href="tofile\v{point}"><span class="icon" id="icon-outside">📤</span> <span id="outside">Archive to file</span></a>'
 
     actions = {
-        'text.todo meta.item.todo.pending': '<p>{complete}</p><p>{cancel}</p>'.format(complete=complete, cancel=cancel),
-        'text.todo meta.item.todo.completed': '<p>{archive}</p><p>{archivetofile}</p><p>{complete}</p>'.format(archive=archive, archivetofile=archivetofile, complete=complete),
-        'text.todo meta.item.todo.cancelled': '<p>{archive}</p><p>{archivetofile}</p><p>{complete}</p><p>{cancel}</p>'.format(archive=archive, archivetofile=archivetofile, complete=complete, cancel=cancel)
+        'text.todo meta.task.pending': '<p>{complete}</p><p>{cancel}</p>'.format(complete=complete, cancel=cancel),
+        'text.todo meta.task.done': '<p>{archive}</p><p>{archivetofile}</p><p>{complete}</p>'.format(archive=archive, archivetofile=archivetofile, complete=complete),
+        'text.todo meta.task.cancelled': '<p>{archive}</p><p>{archivetofile}</p><p>{complete}</p><p>{cancel}</p>'.format(archive=archive, archivetofile=archivetofile, complete=complete, cancel=cancel)
     }
 
     @classmethod
@@ -1097,10 +1097,10 @@ class PlainTasksHover(sublime_plugin.ViewEventListener):
 
         line = self.view.line(point)
         line_scope_name = self.view.scope_name(line.a).strip()
-        if 'meta.item.todo' not in line_scope_name:
+        if 'meta.task' not in line_scope_name:
             return
 
-        bullet = any(('bullet' in self.view.scope_name(p) for p in (point, point - 1)))
+        bullet = any(('punctuation.definition.task' in self.view.scope_name(p) for p in (point, point - 1)))
         if not bullet:
             return
 
@@ -1130,15 +1130,7 @@ class PlainTasksGotoTag(PlainTasksEnabled):
         self.initial_viewport = self.view.viewport_position()
         self.initial_sels = list(self.view.sel())
 
-        self.tags = sorted(
-            [r for r in self.view.find_by_selector('meta.tag.todo')
-             if not any(s in self.view.scope_name(r.a) for s in ('completed', 'cancelled'))
-             ] +
-            self.view.find_by_selector('string.other.tag.todo.critical') +
-            self.view.find_by_selector('string.other.tag.todo.high') +
-            self.view.find_by_selector('string.other.tag.todo.low') +
-            self.view.find_by_selector('string.other.tag.todo.today')
-            )
+        self.tags = sorted(self.view.find_by_selector('markup.tag - markup.tag.state.done - markup.tag.state.cancelled'))
         window = self.view.window() or sublime.active_window()
         items = [[self.view.substr(t), '{0}: {1}'.format(self.view.rowcol(t.a)[0], self.view.substr(self.view.line(t)).strip())] for t in self.tags]
 

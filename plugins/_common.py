@@ -8,9 +8,9 @@ def get_all_projects_and_separators(view):
     # because tmLanguage need \n to make background full width of window
     # multiline headers are possible, thus we have to split em to be sure that
     # one header == one line
-    projects = itertools.chain(*[view.lines(r) for r in view.find_by_selector('keyword.control.header.todo')])
+    projects = itertools.chain(*[view.lines(r) for r in view.find_by_selector('markup.heading')])
     return sorted(list(projects) +
-                  view.find_by_selector('meta.punctuation.separator.todo'))
+                  view.find_by_selector('punctuation.separator.project'))
 
 
 class PlainTasksEnabled(sublime_plugin.TextCommand):
@@ -99,7 +99,7 @@ class PlainTasksFold(PlainTasksEnabled):
         def add_note(region):
             # refactor: method in ArchiveCommand
             next_line_begins = region.end() + 1
-            while self.view.scope_name(next_line_begins) == 'text.todo notes.todo ':
+            while self.view.scope_name(next_line_begins) == 'text.todo meta.note.todo ':
                 note = self.view.line(next_line_begins)
                 if note not in task_regions:
                     task_regions.append(note)
