@@ -404,10 +404,10 @@ class PlainTasksCalculateTimeForTask(PlainTasksEnabled):
 
 class PlainTasksReCalculateTimeForTasks(PlainTasksEnabled):
     def run(self, edit):
-        started = r'^\s*[^\b]*?\s*@started(\([\d\w,\.:\-\/ @]*\)).*$'
+        started = r'^\s*[^\b]*?\s*@start(?:ed)?(\([\d\w,\.:\-\/ @]*\)).*$'
         toggle = r'@toggle(\([\d\w,\.:\-\/ @]*\))'
         calculated = r'([ \t]@[lw]asted\([\d\w,\.:\-\/ @]*\))'
-        done = r'^\s*[^\b]*?\s*@(done|cancell?ed)[ \t]*(\([\d\w,\.:\-\/ @]*\)).*$'
+        done = r'^\s*[^\b]*?\s*@(completed|done|cancell?ed)[ \t]*(\([\d\w,\.:\-\/ @]*\)).*$'
 
         date_format = self.view.settings().get('date_format', '(%y-%m-%d %H:%M)')
         default_now = datetime.now().strftime(date_format)
