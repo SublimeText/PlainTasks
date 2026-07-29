@@ -45,10 +45,28 @@
 	"project_tag": true,
 
 	// Show date and time picker automatically when caret is on tag
-	"show_calendar_on_tags": true,
+	"show_calendar_on_tags": false,
 
 	// Show remain or overdue time under due tags
 	"show_remain_due": true,
+
+	// Place preview date outside of parens of `@due()`, 1 — within
+	"due_preview_offset": 0,
+
+	// {time} is replaced with actual value
+	"due_remain_format": "{time} remaining",
+
+	// {time} is replaced with actual value
+	"due_overdue_format": "{time} overdue",
+
+	// If true, minutes in lasted/wasted tags will be percent of hour, e.g. 1.50 instead of 1:30
+	"decimal_minutes": false,
+
+	// If true, highlight past, soon, and invalid `@due(something)`
+	"highlight_past_due": true,
+
+	// Hours as int, threshold to define which `@due` will be soon
+	"highlight_due_soon": 24,
 
 	// Archives
 	// --------
@@ -62,8 +80,69 @@
 	// org-mode style archive file naming
 	"archive_org_filemask": "{dir}{sep}{base}_archive{ext}",
 
+	// Gutter
+	// ------
+
+	// Gutter icon
+	// Possible values: "", "dot", "circle", "bookmark", "cross",
+	// or custom relative path to existing png file (e.g. "Packages/User/my-icon.png")
+	"icon_critical": "",
+
+	// Gutter icon
+	// Possible values: "", "dot", "circle", "bookmark", "cross",
+	// or custom relative path to existing png file (e.g. "Packages/User/my-icon.png")
+	"icon_high": "",
+
+	// Gutter icon
+	// Possible values: "", "dot", "circle", "bookmark", "cross",
+	// or custom relative path to existing png file (e.g. "Packages/User/my-icon.png")
+	"icon_low": "",
+
+	// Gutter icon
+	// Possible values: "", "dot", "circle", "bookmark", "cross",
+	// or custom relative path to existing png file (e.g. "Packages/User/my-icon.png")
+	"icon_past_due": "circle",
+
+	// Gutter icon
+	// Possible values: "", "dot", "circle", "bookmark", "cross",
+	// or custom relative path to existing png file (e.g. "Packages/User/my-icon.png")
+	"icon_due_soon": "dot",
+
+	// Gutter icon
+	// Possible values: "", "dot", "circle", "bookmark", "cross",
+	// or custom relative path to existing png file (e.g. "Packages/User/my-icon.png")
+	"icon_today": "",
+
+	// Gutter icon
+	// Possible values: "", "dot", "circle", "bookmark", "cross",
+	// or custom relative path to existing png file (e.g. "Packages/User/my-icon.png")
+	"icon_misformatted": "",
+
 	// Status Bar
 	// ----------
+
+	// Format string to customize how statistics are represented in status bar.
+	//
+	// Supported variables:
+	//
+	// Directive  | Description
+	// ---------- | -----------------------------------------------------
+	// $o         | Amount of pending tasks
+	// $d         | Amount of completed tasks
+	// $c         | Amount of cancelled tasks
+	// $n         | Sum of completed and cancelled tasks
+	// $a         | Sum of all tasks
+	// $percent   | Ratio of $n to $a
+	// $progress  | Percent as pseudo graphics (absents if less than 10%)
+	// $last      | Date of lastly completed task
+	// {{...}}    | Return pending/completed/cancelled tasks which matched by regex ...
+	// 			  | e.g. {{@tag}} — amounts of tasks with @tag
+	// 			  | or {{@a|@b}} — tasks with either @a or @b or both.
+	"stats_format": "$n/$a done ($percent%) $progress Last task @done $last",
+	// "stats_format": "□$o ✓$d ×$c",
+
+	// if you want the statistics do not include the archived tasks:
+	"stats_ignore_archive": true,
 
 	// Empty cell for progress-bar in status-bar.
 	// For more details see Custom Statistics in README
@@ -72,6 +151,10 @@
 	// Full cell for progress-bar in status-bar.
 	// For more details see Custom Statistics in README
 	"bar_full": "■",
+
+	// Specify replacement rules to to avoid Unicode when copy stats
+	// e.g. to convert ■■■■■■□□□□ to [======    ]
+	// "replace_stats_chars": [[" ■", " [="], ["■", "="], ["□ ", " ] "], ["□", " "]]
 
 	// ---------------------------
 	// syntax specific preferences

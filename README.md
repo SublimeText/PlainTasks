@@ -176,41 +176,61 @@ pending tasks with selected tags will remain visible (and their notes and projec
 
 PlainTasks is an opinionated plugin, which means that it is highly configured to look in a specific way, but this does not mean that you can not customize it. If you feel that something does not look right and you want to change it, you can easily do it in your user settings file.
 
-Go to `Preferences → Package Settings → PlainTasks` and open `Settings - User`, there you can override all the default settings, to get an idea you can take a look at `Settings - Default`.
+To customize settings, open _Command Palette_
+and call `Preferences: PlainTasks Settings`
+or go to `Main Menu → Preferences → Package Settings → PlainTasks → Settings`.
 
-Here is a list of PlainTasks’ specific settings:
+### Task Settings
 
-|            Setting             |     Default      |                                 Options/Description                                 |
-| ------------------------------ | ---------------- | ----------------------------------------------------------------------- |
-| **open_tasks_bullet**          | `☐`              | `-` `❍` `❑` `■` `□` `☐` `▪` `▫` `–` `—` `≡` `→` `›` `[ ]`             |
-| **done_tasks_bullet**          | `✔`              | `✓` `☑` `+` `[x]`                                                      |
-| **cancelled_tasks_bullet**     | `✘`              | `x` `[-]`                                                               |
-| **date_format**                | `(%y-%m-%d %H:%M)` | See [strfti.me](http://www.strfti.me/) for quick reference; detailed documentation: [ST2](https://docs.python.org/2.6/library/datetime.html#strftime-and-strptime-behavior), [ST3](https://docs.python.org/3.3/library/datetime.html#strftime-and-strptime-behavior) |
-| **done_tag**                   | true             | Determines whether done tasks should gain a `@done` tag or not          |
-| **done_date**                  | true             | Determines whether done tasks should gain a date or not                 |
-| **project_tag**                | true             | Postfix archived task with project tag, otherwise prefix                |
-| **archive_name**               | `Archive:`       | Make sure it is the unique project name within your todo files          |
-| **new_on_top**                 | true             | How to sort archived tasks (done_tag=true and default date_format are required)|
-| **header_to_task**             | false            | If true, a project title line will be converted to a task on the certain keystroke  |
-| **decimal_minutes**            | false            | If true, minutes in lasted/wasted tags will be percent of hour, e.g. 1.50 instead of 1:30 |
-| **tasks_bullet_space**         | whitespace or tab | String to place after bullet, might be any character(s)                |
-| **highlight_past_due**         | true             | If true, highlight past, soon, and invalid `@due(something)`            |
-| **highlight_due_soon**         | 24               | Hours as int, threshold to define which `@due` will be soon             |
-| **scope_past_due**             | `string.other.tag.todo.critical` | Any scope, define color for past `@due`                 |
-| **scope_due_soon**             | `string.other.tag.todo.high`     | Any scope, define color for `@due` will be soon         |
-| **scope_misformatted**         | `string.other.tag.todo.low`      | Any scope, define color for `@due` mismatch **date_format** |
-| **icon_past_due**              | `"circle"`       | Gutter icon¹                                                            |
-| **icon_due_soon**              | `"dot"`          | Gutter icon¹                                                            |
-| **icon_misformatted**          | `""`             | Gutter icon¹                                                            |
-| **icon_critical**              | `""`             | Gutter icon¹                                                            |
-| **icon_high**                  | `""`             | Gutter icon¹                                                            |
-| **icon_low**                   | `""`             | Gutter icon¹                                                            |
-| **icon_today**                 | `""`             | Gutter icon¹                                                            |
-| **show_remain_due**            | false            | In Sublime 3, show remain or overdue time under due tags                |
-| **show_calendar_on_tags**      | false            | In Sublime 3, if true, automatically show date picker when cursor is on tag (you can get date picker any time via context menu) |
-| **due_preview_offset**         | 0                | Place preview date outside of parens of `@due()`, 1 — within            |
-| **due_remain_format**          | `"{time} remaining"` | `{time}` will be replaced with actual value                         |
-| **due_overdue_format**         | `"{time} overdue"` | `{time}` will be replaced with actual value                           |
+|            Setting             |     Default      |                                 Options/Description
+| ------------------------------ | ---------------- | -----------------------------------------------------------------------
+| **taskpaper_compatible**       | false            | Enable taskpaper compatibility mode
+| **open_tasks_bullet**          | `□`              | `-` `❍` `■` `□` `☐` `🔳` `❑` `▪` `▫` `–` `—` `≡` `→` `›` `[ ]`
+| **done_tasks_bullet**          | `✓`              | `+` `🗸` `✓` `✔` `☑` `✅` `☑️` `√` `[x]`
+| **cancelled_tasks_bullet**     | `×`              | `x` `×` `🗙` `✖` `❌` `❎` `✘` `[-]`
+| **tasks_bullet_space**         | whitespace or tab | String to place after bullet, might be any character(s)
+| **header_to_task**             | false            | If true, a project title line will be converted to a task on the certain keystroke
+
+### Tags Settings
+
+|            Setting             |     Default      |                                 Options/Description
+| ------------------------------ | ---------------- | -----------------------------------------------------------------------
+| **before_date_space**          | `" "`            | Space to insert in front of dates
+| **date_format**                | `(%y-%m-%d %H:%M)` | See [strfti.me](http://www.strfti.me/) for quick reference; detailed documentation: [python.org](https://docs.python.org/3.14/library/datetime.html#strftime-and-strptime-behavior)
+| **done_date**                  | true             | Determines whether done tasks should gain a date or not
+| **done_tag**                   | true             | Determines whether done tasks should gain a `@done` tag or not
+| **project_tag**                | true             | Postfix archived task with project tag, otherwise prefix
+| **show_calendar_on_tags**      | false            | Automatically show date picker when cursor is on tag (you can get date picker any time via context menu)
+| **show_remain_due**            | false            | Show remain or overdue time under due tags
+| **due_preview_offset**         | 0                | Place preview date outside of parens of `@due()`, 1 — within
+| **due_remain_format**          | `"{time} remaining"` | `{time}` will be replaced with actual value
+| **due_overdue_format**         | `"{time} overdue"` | `{time}` will be replaced with actual value
+| **decimal_minutes**            | false            | If true, minutes in lasted/wasted tags will be percent of hour, e.g. 1.50 instead of 1:30
+| **highlight_past_due**         | true             | If true, highlight past, soon, and invalid `@due(something)`
+| **highlight_due_soon**         | 24               | Hours as int, threshold to define which `@due` will be soon
+| **scope_past_due**             | `tring.other.tag.todo.critical` | Any scope, define color for past `@due`
+| **scope_due_soon**             | `tring.other.tag.todo.high`     | Any scope, define color for `@due` will be soon
+| **scope_misformatted**         | `tring.other.tag.todo.low`      | Any scope, define color for `@due` mismatch **date_format**
+
+### Archive Settings
+
+|            Setting             |     Default      |                                 Options/Description
+| ------------------------------ | ---------------- | -----------------------------------------------------------------------
+| **archive_name**               | `Archive:`       | Make sure it is the unique project name within your todo files
+| **new_on_top**                 | true             | How to sort archived tasks (done_tag=true and default date_format are required)
+| **archive_org_filemask**       | `"{dir}{sep}{base}_archive{ext}"` | Org-mode style archive file naming
+
+### Gutter Settings
+
+|            Setting             |     Default      |                                 Options/Description
+| ------------------------------ | ---------------- | -----------------------------------------------------------------------
+| **icon_past_due**              | `"circle"`       | Gutter icon¹
+| **icon_due_soon**              | `"dot"`          | Gutter icon¹
+| **icon_misformatted**          | `""`             | Gutter icon¹
+| **icon_critical**              | `""`             | Gutter icon¹
+| **icon_high**                  | `""`             | Gutter icon¹
+| **icon_low**                   | `""`             | Gutter icon¹
+| **icon_today**                 | `""`             | Gutter icon¹
 
 <b>¹</b> Icon value can be  `"dot"`, `"circle"`, `"bookmark"`, `"cross"`, `""`, or custom relative path to existing png file,
 e.g. `"Packages/User/my-icon.png"`.
@@ -265,7 +285,11 @@ PlainTasks comes with a custom todo icon that you can find in the `icons` folder
 
 ## Custom Statistics
 
-Statistics of current file are represented in status-bar, based on `stats_format`, which is `"$n/$a done ($percent%) $progress Last task @done $last"` by default — as you can see it’s just a string containing special directives (see table bellow) and regular chars.
+Format string `stats_format` speciffies how statistics are represented in status bar.
+
+Default: `"$n/$a done ($percent%) $progress Last task @done $last"`
+
+Supported variables:
 
 | Directive    | Description                                           |
 | ------------ | ----------------------------------------------------- |
@@ -279,11 +303,11 @@ Statistics of current file are represented in status-bar, based on `stats_format
 | `$last`      | Date of lastly completed task                         |
 | `{{...}}`    | Return `pending/completed/cancelled` tasks which matched by regex `...`;<br> e.g. `{{@tag}}` — amounts of tasks with `@tag`; or `{{@a|@b}}` — tasks with either `@a` or `@b` or both.<br> You may add several `{{...}}` to get separate stats for different tags. |
 
-So you can customise it as you like, by adding to `Settings - User`, e.g.
+To customise it, call `Preferences: PlainTasks Settings` and add...
 
-```
+```jsonc
 {
-    "stats_format": "☐$o ✔$d ✘$c",
+    "stats_format": "□$o ✓$d ×$c",
 
     // if you want the statistics do not include the archived tasks:
     "stats_ignore_archive": true
@@ -298,14 +322,14 @@ Bring up the command palette and type `Tasks: Copy Statistics`.
 
 ### Additional settings for progress bar
 
-```
+```jsonc
 {
-    "bar_full": "■",   // any char
-    "bar_empty": "☐", // any char
+    "bar_full": "■",  // any char
+    "bar_empty": "□", // any char
 
-    // if you want to avoid Unicode when copy stats — you can define replacements
-    // e.g. to convert ■■■■■■☐☐☐☐ to [======    ]
-    "replace_stats_chars": [[" ■", " [="], ["■", "="], ["☐ ", " ] "], ["☐", " "]]
+    // Specify replacement rules to to avoid Unicode when copy stats
+    // e.g. to convert ■■■■■■□□□□ to [======    ]
+    "replace_stats_chars": [[" ■", " [="], ["■", "="], ["□ ", " ] "], ["□", " "]]
 }
 ```
 
