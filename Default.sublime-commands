@@ -23,5 +23,13 @@
 			"base_file": "${packages}/PlainTasks/PlainTasks.sublime-settings",
 			"default": "// See the left pane for the list of settings and valid values\n{\n\t$0\n}\n"
 		}
+	},
+	{
+		"caption": "Preferences: PlainTasks Key Bindings",
+		"command": "edit_settings",
+		"args": {
+			"base_file": "${packages}/PlainTasks/Default ($platform).sublime-keymap",
+			"default": "// See the left pane for the list of settings and valid values\n{\n\t$0\n}\n"
+		}
 	}
 ]
