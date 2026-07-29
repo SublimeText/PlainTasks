@@ -28,7 +28,7 @@ class PlainTasksBase(sublime_plugin.TextCommand):
             self.before_date_space = settings.get('before_date_space', ' ')
 
         translate_tabs_to_spaces = settings.get('translate_tabs_to_spaces', False)
-        self.before_tasks_bullet_spaces = ' ' * settings.get('before_tasks_bullet_margin', 1) if not self.taskpaper_compatible and translate_tabs_to_spaces else '\t'
+        self.before_tasks_bullet_spaces = ' ' * settings.get('tab_size', 2) if not self.taskpaper_compatible and translate_tabs_to_spaces else '\t'
         self.tasks_bullet_space = settings.get('tasks_bullet_space', ' ' if self.taskpaper_compatible or translate_tabs_to_spaces else '\t')
 
         self.date_format = settings.get('date_format', '(%y-%m-%d %H:%M)')
