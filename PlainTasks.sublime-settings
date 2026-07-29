@@ -81,6 +81,8 @@
 	// syntax specific preferences
 	// ---------------------------
 
+	"context_menu": "PlainTasks Context.sublime-menu",
+
 	"color_scheme": "Packages/PlainTasks/tasks.hidden-tmTheme",
 		// other bundled schemes:
 		//   Packages/PlainTasks/tasks-dark.hidden-tmTheme
