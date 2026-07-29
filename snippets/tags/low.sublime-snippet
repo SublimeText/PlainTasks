@@ -1,0 +1,5 @@
+<snippet>
+	<content><![CDATA[@low]]></content>
+	<tabTrigger>l</tabTrigger>
+	<scope>text.todo</scope>
+</snippet>

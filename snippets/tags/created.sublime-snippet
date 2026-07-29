@@ -1,0 +1,5 @@
+<snippet>
+	<content><![CDATA[@created]]></content>
+	<tabTrigger>cr</tabTrigger>
+	<scope>text.todo</scope>
+</snippet>

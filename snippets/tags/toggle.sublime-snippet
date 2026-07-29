@@ -1,0 +1,5 @@
+<snippet>
+	<content><![CDATA[@toggle]]></content>
+	<tabTrigger>t</tabTrigger>
+	<scope>text.todo</scope>
+</snippet>

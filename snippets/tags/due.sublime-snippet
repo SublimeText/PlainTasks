@@ -1,0 +1,5 @@
+<snippet>
+	<content><![CDATA[@due( $0)]]></content>
+	<tabTrigger>d</tabTrigger>
+	<scope>text.todo</scope>
+</snippet>
