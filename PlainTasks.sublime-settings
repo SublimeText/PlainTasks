@@ -8,18 +8,18 @@
 
 	// Character to use for open tasks
 	// Valid only, if "taskpaper_compatible" is set false.
-	// options: - | ❍ | ❑ | ■ | □ | ☐ | ▪ | ▫ | – | — | ≡ | → | › | [ ]
-	"open_tasks_bullet": "☐",
+	// options: - | ❍ | ■ | □ | ☐ | 🔳 | ❑ | ▪ | ▫ | – | — | ≡ | → | › | [ ]
+	"open_tasks_bullet": "□",
 
 	// Character to use for done tasks
 	// Valid only, if "taskpaper_compatible" is set false.
-	// options: + | ✓ | ✔ | √ | [x]
-	"done_tasks_bullet": "✔",
+	// options: + | 🗸 | ✓ | ✔ | ☑ | ✅ | ☑️ | √ | [x]
+	"done_tasks_bullet": "✓",
 
 	// Character to use for cancelled tasks
 	// Valid only, if "taskpaper_compatible" is set false.
-	// options: x | ✘ | [-] | ❌
-	"cancelled_tasks_bullet": "✘",
+	// options: x | × | 🗙 | ✖ | ❌ | ❎ | ✘ | [-]
+	"cancelled_tasks_bullet": "×",
 
 	// Number of spaces to add in front of new tasks
 	// Valid only, if "taskpaper_compatible" is set false.

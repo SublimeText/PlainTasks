@@ -1078,7 +1078,7 @@ class PlainTasksHover(sublime_plugin.ViewEventListener):
             'body {{{{margin: .1em .3em}}}}'
             'p {{{{margin: .5em 0}}}}'
             'a {{{{text-decoration: none}}}}'
-            'span.icon {{{{font-weight: bold; font-size: 1.3em}}}}'
+            'span.icon {{{{font-weight: normal; font-size: 1.2em; padding: 2px}}}}'
             '#icon-done {{{{color: var(--greenish)}}}}'
             '#icon-cancel {{{{color: var(--redish)}}}}'
             '#icon-archive {{{{color: var(--bluish)}}}}'
@@ -1091,8 +1091,8 @@ class PlainTasksHover(sublime_plugin.ViewEventListener):
            '{actions}'
            )
 
-    complete = '<a href="complete\v{point}"><span class="icon" id="icon-done">✔</span> <span id="done">Toggle complete</span></a>'
-    cancel = '<a href="cancel\v{point}"><span class="icon" id="icon-cancel">✘</span> <span id="cancel">Toggle cancel</span></a>'
+    complete = '<a href="complete\v{point}"><span class="icon" id="icon-done">✓</span> <span id="done">Toggle complete</span></a>'
+    cancel = '<a href="cancel\v{point}"><span class="icon" id="icon-cancel">×</span> <span id="cancel">Toggle cancel</span></a>'
     archive = '<a href="archive\v{point}"><span class="icon" id="icon-archive">📚</span> <span id="archive">Archive</span></a>'
     archivetofile = '<a href="tofile\v{point}"><span class="icon" id="icon-outside">📤</span> <span id="outside">Archive to file</span></a>'
 

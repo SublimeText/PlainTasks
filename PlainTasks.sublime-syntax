@@ -10,11 +10,16 @@ file_extensions:
   - todolist
   - todolist.txt
 
+variables:
+  open_tasks_bullet: -|❍|■|□|☐|🔳|❑|▪|▫|–|—|≡|→|›|\[\s\]
+  done_tasks_bullet: \+|🗸|✓|✔|☑|✅|☑️|√|\[x\]
+  cancelled_tasks_bullet: x|×|🗙|✖|❌|❎|✘|\[-\]
+
 contexts:
   main:
     - match: '^\s*(\#?\s?\w+.*?:\s*?(\@[^\s]+(\(.*?\))?\s*?)*$\n?)'
       scope: keyword.control.header.todo
-    - match: '^\s*(?:(\+|✓|✔|☑|√|\[x\])(\s+(?:[^\@\n]|(?<!\s)\@|\@(?=\s))*)([^\n]*))|^\s*(?:(-)(\s+(?:[^\@]|(?<!\s)\@|\@(?=\s))*)(.*\@done(?=\s|\(|$)[^\n]*))'
+    - match: '^\s*(?:({{done_tasks_bullet}})(\s+(?:[^\@\n]|(?<!\s)\@|\@(?=\s))*)([^\n]*))|^\s*(?:(-)(\s+(?:[^\@]|(?<!\s)\@|\@(?=\s))*)(.*\@done(?=\s|\(|$)[^\n]*))'
       scope: meta.item.todo.completed
       captures:
         1: punctuation.definition.bullet.completed.todo
@@ -23,7 +28,7 @@ contexts:
         4: punctuation.definition.bullet.completed.todo
         5: comment.line.completed.todo
         6: meta.tag.todo.completed
-    - match: '^\s*(?:(✘|❌|x|\[-\])(\s+(?:[^\@\n]|(?<!\s)\@|\@(?=\s))*)(.*))|^\s*(?:(-)(\s+(?:[^\@]|(?<!\s)\@|\@(?=\s))*)(.*\@cancelled(?=\s|\(|$)[^\n]*))'
+    - match: '^\s*(?:({{cancelled_tasks_bullet}})(\s+(?:[^\@\n]|(?<!\s)\@|\@(?=\s))*)(.*))|^\s*(?:(-)(\s+(?:[^\@]|(?<!\s)\@|\@(?=\s))*)(.*\@cancelled(?=\s|\(|$)[^\n]*))'
       scope: meta.item.todo.cancelled
       captures:
         1: punctuation.definition.bullet.cancelled.todo
@@ -32,15 +37,7 @@ contexts:
         4: punctuation.definition.bullet.cancelled.todo
         5: text.cancelled.todo
         6: meta.tag.todo.cancelled
-    - match: '^\s*(?!-|\+|✓|✔|√|❍|❑|■|□|☐|▪|▫|–|—|≡|→|›|\[[\sx-]\]|＿|✘|❌|(x\s+))(?=\S)'
-      push:
-        - meta_scope: notes.todo
-        - match: $\n?
-          pop: true
-        - include: italic
-        - include: bold
-        - include: url
-    - match: '^\s*(-|❍|❑|■|□|☐|▪|▫|–|—|≡|→|›|\[\s\])(?=(\s+(?:[^\@\n]|(?<![ \t])\@)*)(?!([^\n]*)?(\@done|\@cancelled)[\s\(]))'
+    - match: '^\s*({{open_tasks_bullet}})(?=(\s+(?:[^\@\n]|(?<![ \t])\@)*)(?!([^\n]*)?(\@done|\@cancelled)[\s\(]))'
       captures:
         1: punctuation.definition.bullet.pending.todo
       push:
@@ -57,6 +54,14 @@ contexts:
         - include: low
         - include: high
         - include: critical
+    - match: '^\s*(?=\S)'
+      push:
+        - meta_scope: notes.todo
+        - match: $\n?
+          pop: true
+        - include: italic
+        - include: bold
+        - include: url
     - match: ^＿+$
       scope: meta.punctuation.archive.todo
     - match: '^\s*---.{3,5}---+$'
