@@ -148,7 +148,7 @@ class PlainTasksCompleteCommand(PlainTasksBase):
             )
             '''  # rcm is the same, except bullet & ending
         rcm = r'^(\s*)(\[\-\]|.)(\s*[^\b]*?(?:[^\@]|(?<!\s)\@|\@(?=\s))*?\s*)(?=((?:\s@cancelled|@project|@[wl]asted|$).*)|(?:[ \t](\([^()]*\))\s*([^@]*|(?:@project|@[wl]asted).*))?$)'
-        started = r'^\s*[^\b]*?\s*@started(\([\d\w,\.:\-\/ @]*\)).*$'
+        started = r'^\s*[^\b]*?\s*@start(?:ed)?(\([\d\w,\.:\-\/ @]*\)).*$'
         toggle = r'@toggle(\([\d\w,\.:\-\/ @]*\))'
 
         regions = itertools.chain(*(reversed(self.view.lines(region)) for region in reversed(list(self.view.sel()))))
@@ -321,7 +321,7 @@ class PlainTasksCancelCommand(PlainTasksBase):
         rom = r'^(\s*)(\[\s\]|.)(\s*.*)$'
         rdm = r'^(\s*)(\[x\]|.)(\s*[^\b]*?(?:[^\@]|(?<!\s)\@|\@(?=\s))*?\s*)(?=((?:\s@done|@project|@[wl]asted|$).*)|(?:[ \t](\([^()]*\))\s*([^@]*|(?:@project|@[wl]asted).*))?$)'
         rcm = r'^(\s*)(\[\-\]|.)(\s*[^\b]*?(?:[^\@]|(?<!\s)\@|\@(?=\s))*?\s*)(?=((?:\s@cancelled|@project|@[wl]asted|$).*)|(?:[ \t](\([^()]*\))\s*([^@]*|(?:@project|@[wl]asted).*))?$)'
-        started = r'^\s*[^\b]*?\s*@started(\([\d\w,\.:\-\/ @]*\)).*$'
+        started = r'^\s*[^\b]*?\s*@start(?:ed)?(\([\d\w,\.:\-\/ @]*\)).*$'
         toggle = r'@toggle(\([\d\w,\.:\-\/ @]*\))'
         regions = itertools.chain(*(reversed(self.view.lines(region)) for region in reversed(list(self.view.sel()))))
         for line in regions:
