@@ -3,6 +3,7 @@ import itertools
 import json
 import locale
 import re
+from calendar import monthrange
 from datetime import datetime
 from datetime import timedelta
 
@@ -13,7 +14,6 @@ from ._common import PlainTasksBase, PlainTasksEnabled, PlainTasksFold
 
 try:  # unavailable dependencies shall not break basic functionality
     from dateutil import parser as dateutil_parser
-    from dateutil.relativedelta import relativedelta
 except ImportError:
     dateutil_parser = None
 
@@ -703,7 +703,10 @@ class PlainTasksCalendar(PlainTasksEnabled):
 
         def shift(stamp, month=0, year=0):
             y, m, d, H, M = (int(i) for i in stamp.split('-'))
-            date = datetime(y, m, d, H, M, 0) + relativedelta(months=month, years=year)
+            y += year + int((m + month) / 12)
+            m = ((m + month - 1) % 12) + 1
+            d = min(d, monthrange(y, m)[1])
+            date = datetime(y, m, d, H, M, 0)
             self.view.update_popup(self.generate_calendar(date))
 
         case = {
