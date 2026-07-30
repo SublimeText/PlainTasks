@@ -568,7 +568,7 @@ class PlainTasksOpenUrlCommand(PlainTasksEnabled):
 
 class PlainTasksOpenLinkCommand(PlainTasksEnabled):
     LINK_PATTERN = re.compile(  # simple ./path/
-        r'''(?ixu)(?:^|[ \t])\.[\\/]
+        r'''(?ix)(?:^|[ \t])\.[\\/]
             (?P<fn>
             (?:[a-z]\:[\\/])?      # special case for Windows full path
             (?:[^\\/:">]+[\\/]?)+) # the very path (single filename/relative/full)
@@ -577,7 +577,7 @@ class PlainTasksOpenLinkCommand(PlainTasksEnabled):
             (>(?P<sym>\w+))?(\:(?P<line>\d+))?(\:(?P<col>\d+))?(\"(?P<text>[^\n]*)\")?
         ''')
     MD_LINK = re.compile(  # markdown [](path)
-        r'''(?ixu)\][ \t]*\(\<?(?:file\:///?)?
+        r'''(?ix)\][ \t]*\(\<?(?:file\:///?)?
             (?P<fn>.*?((\\\))?.*?)*)
               (?:\>?[ \t]*
               \"((\:(?P<line>\d+))?(\:(?P<col>\d+))?|(\>(?P<sym>\w+))?|(?P<text>[^\n]*))
@@ -585,7 +585,7 @@ class PlainTasksOpenLinkCommand(PlainTasksEnabled):
             \)
         ''')
     WIKI_LINK = re.compile(  # ORGMODE, NV, and all similar formats [[link][opt-desc]]
-        r'''(?ixu)\[\[(?:file(?:\+(?:sys|emacs))?\:)?(?:\.[\\/])?
+        r'''(?ix)\[\[(?:file(?:\+(?:sys|emacs))?\:)?(?:\.[\\/])?
             (?P<fn>.*?((\\\])?.*?)*)
               (?# options for orgmode link [[path::option]])
               (?:\:\:(((?P<line>\d+))?(\:(?P<col>\d+))?|(\*(?P<sym>\w+))?|(?P<text>.*?((\\\])?.*?)*)))?

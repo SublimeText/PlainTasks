@@ -299,10 +299,42 @@ contexts:
     - match: ''
       pop: true
 
+###[ INLINE: LINKS ]##########################################################
+
   urls:
     - match: <(?=[\w+]+(?:://|[./]).*>)
       scope: punctuation.definition.link.begin.todo
       push: inside-url
+    - match: \[\[
+      scope: punctuation.definition.link.begin.todo
+      push:
+        - after-wikilink
+        - inside-wikilink
+    # file links
+    - match: |-
+        (?ix)
+        (\.[\\/])                 # definition
+        (
+          (?:[a-z]:[\\/])?        # special case for Windows full path
+          (?:[^\\/:">]+[\\/]?)+   # the very path (single filename/relative/full)
+        )
+        (?:
+          ((>)\w+)                # >symbol
+        | ((:)\d+(?:(:)\d+)?)     # :row:col
+        | ((")[^"]*("))           # text
+        )?
+      scope: meta.link.file.todo
+      captures:
+        1: punctuation.definition.link.todo
+        2: meta.path.filename.todo markup.underline.link.todo
+        3: meta.path.symbol.todo
+        4: punctuation.definition.symbol.todo
+        5: meta.path.rowcol.todo
+        6: punctuation.separator.row.todo
+        7: punctuation.separator.col.todo
+        8: meta.path.text.todo
+        9: punctuation.definition.text.begin.todo
+        10: punctuation.definition.text.end.todo
 
   inside-url:
     - meta_scope: meta.link.url.todo
@@ -319,11 +351,42 @@ contexts:
     - match: ':/{,2}'
       scope: punctuation.separator.path.todo
 
+  inside-wikilink:
+    - meta_content_scope: meta.path.todo
+    - match: \]\]
+      scope: punctuation.definition.link.end.todo
+      pop: true
+    - match: |-
+        (?x)
+        (::)
+        (?: ((\d+)(?:(:)(\d+))?) | ((\*)(?:(?!\]\]).)*) | ((?!\]\]).)* )
+      captures:
+        1: punctuation.separator.todo
+        2: meta.path.rowcol.todo
+        3: punctuation.separator.todo
+        6: meta.path.symbol.todo
+        7: punctuation.definition.symbol.todo
+        8: meta.path.text.todo
+
+  after-wikilink:
+    - meta_scope: meta.link.wiki.todo
+    - match: \s*(")(:)(\d+)(?:(:)(\d+))?(")
+      scope: meta.path.rowcol.todo
+      pop: true
+    - match: \s*(")(>)([^"]*)(")
+      scope: meta.path.symbol.todo
+      pop: true
+    - match: \s*(")([^"]*)(")
+      scope: meta.path.text.todo
+      pop: true
+    - match: ''
+      pop: true
+
 ###[ VARIABLES ]###############################################################
 
 variables:
   open_tasks_bullet: -|❍|■|□|☐|🔳|❑|▪|▫|–|—|≡|→|›|\[\s\]
-  done_tasks_bullet: \+|🗸|✓|✔|☑|✅|☑️|√|\[x\]
+  done_tasks_bullet: \+|🗸|✓|✔|☑|✅|☑|√|\[x\]
   cancelled_tasks_bullet: x|×|🗙|✖|❌|❎|✘|\[-\]
 
   task_text: ([^\s@✭].*?(?=\s+\@|\s*✭|\s*$))

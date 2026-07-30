@@ -34,6 +34,9 @@ Header Text [personal] - (notes): @critical
 //          ^^^^^^^^ markup.italic.todo
 //                      ^^^^^^^^ markup.bold.todo
 
+// URLs
+// ====
+
   <dir/file.ext>
 //^^^^^^^^^^^^^^ meta.link.url.todo
 //^ punctuation.definition.link.begin.todo
@@ -57,6 +60,72 @@ Header Text [personal] - (notes): @critical
 //^ punctuation.definition.link.begin.todo
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ markup.underline.link.url.todo
 //                                                          ^ punctuation.definition.link.end.todo
+
+// File Links
+// ==========
+
+  .\TODO.todo
+//^^^^^^^^^^^ meta.note.todo meta.link.file.todo
+//^^ punctuation.definition.link.todo
+//  ^^^^^^^^^ meta.path.filename.todo
+
+  ./TODO.todo
+//^^^^^^^^^^^ meta.note.todo meta.link.file.todo
+//^^ punctuation.definition.link.todo
+//  ^^^^^^^^^ meta.path.filename.todo
+
+  .\c:\
+//^^^^^ meta.note.todo meta.link.file.todo
+//^^ punctuation.definition.link.todo
+//  ^^^ meta.path.filename.todo
+
+  .\C:\path name\file name.ext
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.note.todo meta.link.file.todo
+//^^ punctuation.definition.link.todo
+//  ^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.path.filename.todo
+
+  .\C:\path name\file name.ext>symbol
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.note.todo meta.link.file.todo
+//^^ punctuation.definition.link.todo
+//  ^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.path.filename.todo
+//                            ^^^^^^^ meta.path.symbol.todo
+//                            ^ punctuation.definition.symbol.todo
+
+  .\C:\path name\file name.ext:10:2
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.note.todo meta.link.file.todo
+//^^ punctuation.definition.link.todo
+//  ^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.path.filename.todo
+//                            ^^^^^ meta.path.rowcol.todo
+//                            ^ punctuation.separator.row.todo
+//                               ^ punctuation.separator.col.todo
+
+  .\C:\path name\file name.ext"text"
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.note.todo meta.link.file.todo
+//^^ punctuation.definition.link.todo
+//  ^^^^^^^^^^^^^^^^^^^^^^^^^^ meta.path.filename.todo
+//                            ^^^^^^ meta.path.text.todo
+//                            ^ punctuation.definition.text.begin.todo
+//                                 ^ punctuation.definition.text.end.todo
+
+
+// Markdown Links
+// ==============
+
+  [](path)
+  [](path ":11:8")
+  [](path ">symbol")
+  [](path "any text")
+
+// Wiki Links
+// ==========
+
+  [[path]]
+  [[path::11:8]]
+  [[path::*symbol]]
+  [[path::any text]]
+  [[path]] ":11:8"
+  [[path]] ">symbol"
+  [[path]] "any text"
 
 // Tasks
 // =====
