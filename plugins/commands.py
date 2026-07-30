@@ -1133,7 +1133,7 @@ class PlainTasksHover(sublime_plugin.ViewEventListener):
             'complete': lambda: self.view.run_command('plain_tasks_complete'),
             'cancel': lambda: self.view.run_command('plain_tasks_cancel'),
             'archive': lambda: self.view.run_command("plain_tasks_archive", {"partial": True}),
-            'tofile': lambda: self.view.run_command('plain_tasks_org_archive'),
+            'tofile': lambda: self.view.run_command('plain_tasks_archive_org'),
         }
         self.view.sel().clear()
         self.view.sel().add(sublime.Region(int(at)))
