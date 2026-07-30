@@ -57,6 +57,9 @@ def check_parentheses(date_format, regex_group, is_date=False):
 
 
 class PlainTasksNewCommand(PlainTasksBase):
+    def want_event(self):
+        return True
+
     def runCommand(self, edit):
         # list for ST3 support;
         # reversed because with multiple selections regions would be messed up after first iteration
@@ -114,6 +117,9 @@ class PlainTasksNewCommand(PlainTasksBase):
 
 
 class PlainTasksNewWithDateCommand(PlainTasksBase):
+    def want_event(self):
+        return True
+
     def runCommand(self, edit):
         self.view.run_command('plain_tasks_new')
         sels = list(self.view.sel())
@@ -133,6 +139,9 @@ class PlainTasksNewWithDateCommand(PlainTasksBase):
 
 
 class PlainTasksCompleteCommand(PlainTasksBase):
+    def want_event(self):
+        return True
+
     def runCommand(self, edit):
         original = [r for r in self.view.sel()]
         done_line_end, now = self.format_line_end(self.done_tag, tznow())
@@ -223,6 +232,9 @@ class PlainTasksCompleteCommand(PlainTasksBase):
 
 
 class PlainTasksInjectDueDateCommand(PlainTasksBase):
+    def want_event(self):
+        return True
+
     def is_visible(self):
         return self.view.score_selector(0, "text.todo") > 0
 
@@ -245,6 +257,9 @@ class PlainTasksInjectDueDateCommand(PlainTasksBase):
 class PlainTasksSortByDueDateAndPriorityCommand(PlainTasksBase):
     class Task:
         pass
+
+    def want_event(self):
+        return True
 
     def is_visible(self):
         return self.view.score_selector(0, "text.todo") > 0
@@ -314,6 +329,9 @@ class PlainTasksSortByDueDateAndPriorityCommand(PlainTasksBase):
 
 
 class PlainTasksCancelCommand(PlainTasksBase):
+    def want_event(self):
+        return True
+
     def runCommand(self, edit):
         original = [r for r in self.view.sel()]
         canc_line_end, now = self.format_line_end(self.canc_tag, tznow())
@@ -390,6 +408,9 @@ class PlainTasksCancelCommand(PlainTasksBase):
 
 
 class PlainTasksArchiveCommand(PlainTasksBase):
+    def want_event(self):
+        return True
+
     def runCommand(self, edit, partial=False):
         rds = 'meta.item.todo.completed'
         rcs = 'meta.item.todo.cancelled'
