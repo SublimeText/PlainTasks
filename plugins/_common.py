@@ -31,6 +31,9 @@ class PlainTasksEnabled(sublime_plugin.TextCommand):
 
 
 class PlainTasksBase(PlainTasksEnabled):
+    def want_event(self):
+        return True
+
     def run(self, edit, **kwargs):
         self.move_caret_to_cursor(kwargs.pop("event", None))
 

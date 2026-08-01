@@ -403,9 +403,6 @@ class PlainTasksCalculateTimeForTask(PlainTasksEnabled):
 
 
 class PlainTasksReCalculateTimeForTasks(PlainTasksEnabled):
-    def want_event(self):
-        return True
-
     def run(self, edit):
         started = r'^\s*[^\b]*?\s*@start(?:ed)?(\([\d\w,\.:\-\/ @]*\)).*$'
         toggle = r'@toggle(\([\d\w,\.:\-\/ @]*\))'
@@ -445,9 +442,6 @@ class PlainTasksReCalculateTimeForTasks(PlainTasksEnabled):
 
 
 class PlainTaskInsertDate(PlainTasksBase):
-    def want_event(self):
-        return True
-
     def runCommand(self, edit, region=None, date=None):
         if region:
             y, m, d, H, M = date
@@ -462,9 +456,6 @@ class PlainTaskInsertDate(PlainTasksBase):
 
 
 class PlainTasksReplaceShortDate(PlainTasksBase):
-    def want_event(self):
-        return True
-
     def runCommand(self, edit):
         s = self.view.sel()[0]
         date, error, region = expand_short_date(self.view, s.a, s.b, datetime.now(), self.date_format)
@@ -566,9 +557,6 @@ class PlainTasksChooseDate(sublime_plugin.ViewEventListener):
 
 
 class PlainTasksCalendar(PlainTasksEnabled):
-    def want_event(self):
-        return True
-
     def run(self, edit, point=None, event=None):
         self.move_caret_to_cursor(event, force=True)
         point = point or self.view.sel()[0].a
