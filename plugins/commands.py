@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 import sublime
 import sublime_plugin
 
-from ._common import PlainTasksBase, PlainTasksFold, get_all_projects_and_separators
+from ._common import PlainTasksBase, PlainTasksEnabled, PlainTasksFold, get_all_projects_and_separators
 
 __all__ = [
     "PlainTasksNewCommand",
@@ -235,9 +235,6 @@ class PlainTasksInjectDueDateCommand(PlainTasksBase):
     def want_event(self):
         return True
 
-    def is_visible(self):
-        return self.view.score_selector(0, "text.todo") > 0
-
     def runCommand(self, edit):
         due_re = r'^\s*[^\b]*?\s*@due\([\d\w,\.:\-\/ @]*\).*$'
         regions = itertools.chain(*(reversed(self.view.lines(region)) for region in reversed(list(self.view.sel()))))
@@ -260,9 +257,6 @@ class PlainTasksSortByDueDateAndPriorityCommand(PlainTasksBase):
 
     def want_event(self):
         return True
-
-    def is_visible(self):
-        return self.view.score_selector(0, "text.todo") > 0
 
     def runCommand(self, edit, descending=False):
         due_re = r'^\s*[^\b]*?\s*@due\(([\d\w,\.:\-\/ @]*)\).*$'
@@ -550,7 +544,7 @@ class PlainTasksNewTaskDocCommand(sublime_plugin.WindowCommand):
         view.settings().set('color_scheme', pts.get('color_scheme'))
 
 
-class PlainTasksOpenUrlCommand(sublime_plugin.TextCommand):
+class PlainTasksOpenUrlCommand(PlainTasksEnabled):
     #It is horrible regex but it works perfectly
     URL_REGEX = r"""(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))
         +(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))"""
@@ -600,7 +594,7 @@ class PlainTasksOpenUrlCommand(sublime_plugin.TextCommand):
             sublime.status_message("Looks like there is nothing to open")
 
 
-class PlainTasksOpenLinkCommand(sublime_plugin.TextCommand):
+class PlainTasksOpenLinkCommand(PlainTasksEnabled):
     LINK_PATTERN = re.compile(  # simple ./path/
         r'''(?ixu)(?:^|[ \t])\.[\\/]
             (?P<fn>
@@ -834,7 +828,7 @@ class PlainTasksSortByDate(PlainTasksBase):
             sublime.status_message("Nothing to sort")
 
 
-class PlainTasksRemoveBold(sublime_plugin.TextCommand):
+class PlainTasksRemoveBold(PlainTasksEnabled):
     def run(self, edit):
         for s in reversed(list(self.view.sel())):
             a, b = s.begin(), s.end()
@@ -912,10 +906,7 @@ class PlainTasksStatsStatus(sublime_plugin.EventListener):
         return msg
 
 
-class PlainTasksCopyStats(sublime_plugin.TextCommand):
-    def is_enabled(self):
-        return self.view.score_selector(0, "text.todo") > 0
-
+class PlainTasksCopyStats(PlainTasksEnabled):
     def run(self, edit):
         msg = self.view.get_status('PlainTasks')
         replacements = self.view.settings().get('replace_stats_chars', [])
@@ -1162,7 +1153,7 @@ class PlainTasksHover(sublime_plugin.ViewEventListener):
         self.view.hide_popup()
 
 
-class PlainTasksGotoTag(sublime_plugin.TextCommand):
+class PlainTasksGotoTag(PlainTasksEnabled):
     def run(self, edit):
         self.initial_viewport = self.view.viewport_position()
         self.initial_sels = list(self.view.sel())

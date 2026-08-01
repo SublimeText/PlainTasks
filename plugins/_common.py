@@ -13,7 +13,24 @@ def get_all_projects_and_separators(view):
                   view.find_by_selector('meta.punctuation.separator.todo'))
 
 
-class PlainTasksBase(sublime_plugin.TextCommand):
+class PlainTasksEnabled(sublime_plugin.TextCommand):
+    def is_enabled(self):
+        sel = self.view.sel()
+        pt = sel[0].b if sel else 0
+        return self.view.match_selector(pt, "text.todo")
+
+    is_visible = is_enabled
+
+    def move_caret_to_cursor(self, event=None, force=False):
+        # move caret to click position
+        if event is not None:
+            sels = self.view.sel()
+            if force or len(sels) == 1 and sels[0].empty():
+                sels.clear()
+                sels.add(self.view.window_to_text((event["x"], event["y"])))
+
+
+class PlainTasksBase(PlainTasksEnabled):
     def run(self, edit, **kwargs):
         self.move_caret_to_cursor(kwargs.pop("event", None))
 
@@ -57,29 +74,6 @@ class PlainTasksBase(sublime_plugin.TextCommand):
             date = tznow.strftime(self.date_format)
         done_line_end = ' %s%s%s' % (tag, self.before_date_space, date if self.done_date else '')
         return done_line_end.replace('  ', ' ').rstrip(), date
-
-    def move_caret_to_cursor(self, event=None, force=False):
-        # move caret to click position
-        if event is not None:
-            sels = self.view.sel()
-            if force or len(sels) == 1 and sels[0].empty():
-                sels.clear()
-                sels.add(self.view.window_to_text((event["x"], event["y"])))
-
-
-class PlainTasksEnabled(sublime_plugin.TextCommand):
-    def is_enabled(self):
-        return self.view.score_selector(0, "text.todo") > 0
-
-    is_visible = is_enabled
-
-    def move_caret_to_cursor(self, event=None, force=False):
-        # move caret to click position
-        if event is not None:
-            sels = self.view.sel()
-            if force or len(sels) == 1 and sels[0].empty():
-                sels.clear()
-                sels.add(self.view.window_to_text((event["x"], event["y"])))
 
 
 class PlainTasksFold(PlainTasksEnabled):
