@@ -70,35 +70,14 @@ pending tasks with selected tags will remain visible (and their notes and projec
 
     - year, month, minute, hour can be omitted:
 
-        <table>
-         <tr>
-          <th>  Notation    </th><th>   Meaning     </th>
-         </tr>
-         <tr>
-          <td>  <code>@due(1)</code>    </td>
-          <td>  1st day of next month always    </td>
-         </tr>
-         <tr>
-          <td>  <code>@due(--1)</code>    </td>
-          <td>  1st day of current month always    </td>
-         </tr>
-         <tr>
-          <td>  <code>@due(5)</code>    </td>
-          <td>  5th day of current month (or next month if current day is 5th or older) </td>
-         </tr>
-         <tr>
-          <td>  <code>@due(2-3)</code>  </td>
-          <td>  February 3rd of current year or next one    </td>
-         </tr>
-         <tr>
-          <td>  <code>@due(31 23:)</code>   </td>
-          <td>  31st day of current/next month at 23 hours and minutes are equal to current moment  </td>
-         </tr>
-         <tr>
-          <td>  <code>@due(16.1.1 1:1)</code>   </td>
-          <td>  January 1st of 2016 at 01:01    <code>@due(16-01-01 01:01)</code>  </td>
-         </tr>
-        </table>
+        | Notation                     | Meaning
+        | ---------------------------- | -----------------------------------------------------------------------
+        | `@due(1)`                    | 1st day of next month always
+        | `@due(--1)`                  | 1st day of current month always
+        | `@due(5)`                    | 5th day of current month (or next month if current day is 5th or older)
+        | `@due(2-3)`                  | February 3rd of current year or next one
+        | `@due(31 23:)`               | 31st day of current/next month at 23 hours and minutes are equal to current moment
+        | `@due(16.1.1 1:1)`           | January 1st of 2016 at 01:01, i.e. `@due(16-01-01 01:01)`
 
     - relative period of time starts with a plus sign, two plus signs, or a minus sign
       __`[+[+]|-][number][DdWwHhMm][ [number][DdWwHhMm] ...][h:m]`__ — the sign is optional
@@ -122,67 +101,22 @@ pending tasks with selected tags will remain visible (and their notes and projec
 
         The meanings in the table below denote the offset before rounding.
 
-        <table>
-         <tr>
-          <th>  Notation    </th><th>   Meaning     </th>
-         </tr>
-         <tr>
-          <td>  <code>@due(+)</code>    </td>
-          <td>  tomorrow as well as <code>@due( +1)</code> or <code>@due( +1d)</code></td>
-         </tr>
-         <tr>
-          <td>  <code>@due(+w)</code>    </td>
-          <td>  one week since current date, i.e. <code>@due( +7)</code></td>
-         </tr>
-         <tr>
-          <td>  <code>@due(+3w)</code>  </td>
-          <td>  3 weeks since current date, i.e. <code>@due( +21d)</code></td>
-         </tr>
-         <tr>
-          <td>  <code>@due(++)</code>   </td>
-          <td>  one day since <code>@created(date)</code> if any, otherwise it is equal to <code>@due(+)</code></td>
-         </tr>
-         <tr>
-          <td>  <code>@due(+2:)</code>   </td>
-          <td>  two hours since current date</td>
-         </tr>
-         <tr>
-          <td>  <code>@due(+:555)</code>   </td>
-          <td>  555 minutes since current date</td>
-         </tr>
-         <tr>
-          <td>  <code>@due(+2 12:)</code>   </td>
-          <td>  2 days and 12 hours since current date</td>
-         </tr>
-         <tr>
-          <td>  <code>@due(-1d)</code>    </td>
-          <td>  yesterday, i.e. one day before current date</td>
-         </tr>
-         <tr>
-          <td>  <code>@due(-w)</code>    </td>
-          <td>  one week before current date</td>
-         </tr>
-         <tr>
-          <td>  <code>@due(+2h)</code>    </td>
-          <td>  two hours since current date, same as <code>@due(+2:)</code></td>
-         </tr>
-         <tr>
-          <td>  <code>@due(+10m)</code>    </td>
-          <td>  ten minutes since current date</td>
-         </tr>
-         <tr>
-          <td>  <code>@due(3h)</code>    </td>
-          <td>  three hours since current date — the sign may be omitted when a unit letter is present</td>
-         </tr>
-         <tr>
-          <td>  <code>@due(+1d 3h)</code>    </td>
-          <td>  1 day and 3 hours since current date (components are summed)</td>
-         </tr>
-         <tr>
-          <td>  <code>@due(-2w 1d 4h 30m)</code>    </td>
-          <td>  2 weeks, 1 day, 4 hours and 30 minutes before current date</td>
-         </tr>
-        </table>
+        | Notation                     | Meaning
+        | ---------------------------- | -----------------------------------------------------------------------
+        | `@due(+)`                    | tomorrow as well as `@due( +1)` or `@due( +1d)`
+        | `@due(+w)`                   | one week since current date, i.e. `@due( +7)`
+        | `@due(+3w)`                  | 3 weeks since current date, i.e. `@due( +21d)`
+        | `@due(++)`                   | one day since `@created(date)` if any, otherwise it is equal to `@due(+)`
+        | `@due(+2:)`                  | two hours since current date
+        | `@due(+:555)`                | 555 minutes since current date
+        | `@due(+2 12:)`               | 2 days and 12 hours since current date
+        | `@due(-1d)`                  | yesterday, i.e. one day before current date
+        | `@due(-w)`                   | one week before current date
+        | `@due(+2h)`                  | two hours since current date, same as `@due(+2:)`
+        | `@due(+10m)`                 | ten minutes since current date
+        | `@due(3h)`                   | three hours since current date, the sign may be omitted when a unit letter is present
+        | `@due(+1d 3h)`               | 1 day and 3 hours since current date (components are summed)
+        | `@due(-2w 1d 4h 30m)`        | 2 weeks, 1 day, 4 hours and 30 minutes before current date
 
 ☐ You can create a link to a file within your project by prefixing the file name with a dot and (back)slash like: `.\filename\` or `./another filename/`.  
   The line and column can be specified by colons: `.\filename:11:8`.  
