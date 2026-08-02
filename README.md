@@ -106,6 +106,22 @@ pending tasks with selected tags will remain visible (and their notes and projec
       number defaults to days. Multiple `number`+`unit` components may be combined in one tag,
       separated by spaces, and their amounts are summed.
 
+        The resulting date is rounded up to the next whole unit
+        of the finest unit occurring in the tag,
+        where the day is the coarsest unit that is rounded to.
+        Thus `@due(+1d)` written at 01:23 is due at midnight following the next day,
+        `@due(+1w)` at the end of the day seven days from now,
+        and `@due(+22d 21h)` always at a full hour, i.e. with 0 minutes.
+        A tag without any unit letter counts as days,
+        so `@due(+2)` is rounded like `@due(+2d)`,
+        while the `h:m` suffix contributes its own precision
+        and hence `@due(+2 12:)` is rounded to the hour.
+        Appending `0m` makes the minute the finest unit
+        and therefore keeps the current time of day,
+        e.g. `@due(+1d 0m)` or `@due(+22d 21h 0m)`.
+
+        The meanings in the table below denote the offset before rounding.
+
         <table>
          <tr>
           <th>  Notation    </th><th>   Meaning     </th>

@@ -51,9 +51,30 @@ def is_dayfirst(date_format):
 
 UNIT_RE = re.compile(r'(?P<number>\d*)\s*(?P<unit>[DdWwHhMm])(?![A-Za-z])')
 
+# from finest to coarsest; a week is rounded like a day, as day is the coarsest
+# unit we round to
+ROUNDING_UNITS = (
+    ('m', timedelta(minutes=1), dict(second=0, microsecond=0)),
+    ('h', timedelta(hours=1), dict(minute=0, second=0, microsecond=0)),
+    ('d', timedelta(days=1), dict(hour=0, minute=0, second=0, microsecond=0)),
+)
+
 
 def is_relative(text):
     return text.lstrip()[:1] in ('+', '-') or bool(UNIT_RE.search(text))
+
+
+def round_up(date, units):
+    '''Round date up to the next boundary of the finest unit in units
+
+    units
+        set of 'd', 'h' and/or 'm'; an empty set implies day precision
+    '''
+    unit, step, truncation = next(
+        (u for u in ROUNDING_UNITS if u[0] in units),
+        ROUNDING_UNITS[-1])  # day is the default precision
+    truncated = date.replace(**truncation)
+    return truncated if truncated == date else truncated + step
 
 
 def _convert_date(matchstr, now):
@@ -150,10 +171,13 @@ def increase_date(view, region, text, now, date_format):
     if tokens:
         # one or more "<number><unit>" components, e.g. @due(+1d 3h), @due(-2w 1d 4h 30m)
         amounts = {'d': 0, 'w': 0, 'h': 0, 'm': 0}
+        units = set()
         pos = 0
         leftover_parts = []
         for m in tokens:
-            amounts[m.group('unit').lower()] += int(m.group('number') or 1)
+            unit = m.group('unit').lower()
+            amounts[unit] += int(m.group('number') or 1)
+            units.add('d' if unit == 'w' else unit)
             leftover_parts.append(rest[pos:m.start()])
             pos = m.end()
         leftover_parts.append(rest[pos:])
@@ -164,12 +188,15 @@ def increase_date(view, region, text, now, date_format):
         hm = re.search(r'(?mx)(?P<hour>\d*)[:.](?P<minute>\d*)', leftover)
         hour = int(hm.group('hour') or 0) if hm else 0
         minute = int(hm.group('minute') or 0) if hm else 0
+        if hm:
+            units.add('m' if hm.group('minute') else 'h' if hm.group('hour') else 'd')
 
         delta = error = None
         try:
-            delta = now + sign * timedelta(weeks=amounts['w'], days=amounts['d'],
-                                           hours=amounts['h'] + hour,
-                                           minutes=amounts['m'] + minute)
+            delta = round_up(now + sign * timedelta(weeks=amounts['w'], days=amounts['d'],
+                                                    hours=amounts['h'] + hour,
+                                                    minutes=amounts['m'] + minute),
+                             units)
         except (ValueError, OverflowError) as e:
             error = e, amounts['w'], amounts['d'], amounts['h'] + hour, amounts['m'] + minute
         return delta, error
@@ -192,9 +219,10 @@ def increase_date(view, region, text, now, date_format):
     if not (number or hour or minute):
         # set 1 if number is omitted, i.e. @due(+) == @due(+1) == @due(+1d)
         number = 1
+    units = {'m' if match_obj.group('minute') else 'h' if match_obj.group('hour') else 'd'}
     delta = error = None
     try:
-        delta = now + sign * timedelta(days=number, hours=hour, minutes=minute)
+        delta = round_up(now + sign * timedelta(days=number, hours=hour, minutes=minute), units)
     except (ValueError, OverflowError) as e:
         error = e, number, hour, minute
     return delta, error
