@@ -100,8 +100,11 @@ pending tasks with selected tags will remain visible (and their notes and projec
          </tr>
         </table>
 
-    - relative period of time starts with a plus sign or two
-      __`+[+][number][DdWw][h:m]`__ — number is optional as well as letter `d` for days or letter `w` for weeks.
+    - relative period of time starts with a plus sign, two plus signs, or a minus sign
+      __`[+[+]|-][number][DdWwHhMm][ [number][DdWwHhMm] ...][h:m]`__ — the sign is optional
+      whenever at least one unit letter (`d`/`w`/`h`/`m`) is present, in which case a plain
+      number defaults to days. Multiple `number`+`unit` components may be combined in one tag,
+      separated by spaces, and their amounts are summed.
 
         <table>
          <tr>
@@ -134,6 +137,34 @@ pending tasks with selected tags will remain visible (and their notes and projec
          <tr>
           <td>  <code>@due(+2 12:)</code>   </td>
           <td>  2 days and 12 hours since current date</td>
+         </tr>
+         <tr>
+          <td>  <code>@due(-1d)</code>    </td>
+          <td>  yesterday, i.e. one day before current date</td>
+         </tr>
+         <tr>
+          <td>  <code>@due(-w)</code>    </td>
+          <td>  one week before current date</td>
+         </tr>
+         <tr>
+          <td>  <code>@due(+2h)</code>    </td>
+          <td>  two hours since current date, same as <code>@due(+2:)</code></td>
+         </tr>
+         <tr>
+          <td>  <code>@due(+10m)</code>    </td>
+          <td>  ten minutes since current date</td>
+         </tr>
+         <tr>
+          <td>  <code>@due(3h)</code>    </td>
+          <td>  three hours since current date — the sign may be omitted when a unit letter is present</td>
+         </tr>
+         <tr>
+          <td>  <code>@due(+1d 3h)</code>    </td>
+          <td>  1 day and 3 hours since current date (components are summed)</td>
+         </tr>
+         <tr>
+          <td>  <code>@due(-2w 1d 4h 30m)</code>    </td>
+          <td>  2 weeks, 1 day, 4 hours and 30 minutes before current date</td>
          </tr>
         </table>
 

@@ -88,6 +88,24 @@ class TestDatesFunctions(TestCase):
             {'string': '+555', 'result': datetime(2018, 7, 9, 23, 0), },
             {'string': '++', 'result': datetime(2016, 12, 2, 23, 0), 'view': View(created='@created(16.12.1)')},
             {'string': '++4w', 'result': datetime(2016, 12, 29, 23, 0), 'view': View(created='@created(16.12.1)')},
+            # negative offsets
+            {'string': '-', 'result': datetime(2016, 12, 30, 23, 0), },
+            {'string': '-1d', 'result': datetime(2016, 12, 30, 23, 0), },
+            {'string': '-w', 'result': datetime(2016, 12, 24, 23, 0), },
+            {'string': '-3w', 'result': datetime(2016, 12, 10, 23, 0), },
+            # hour/minute unit letters
+            {'string': '+2h', 'result': datetime(2017, 1, 1, 1, 0), },
+            {'string': '-2h', 'result': datetime(2016, 12, 31, 21, 0), },
+            {'string': '+10m', 'result': datetime(2016, 12, 31, 23, 10), },
+            {'string': '-10m', 'result': datetime(2016, 12, 31, 22, 50), },
+            # sign is optional when a unit letter is present
+            {'string': '3h', 'result': datetime(2017, 1, 1, 2, 0), },
+            {'string': '2d', 'result': datetime(2017, 1, 2, 23, 0), },
+            # multiple components
+            {'string': '+1d 3h', 'result': datetime(2017, 1, 2, 2, 0), },
+            {'string': '-2w 1d 4h 30m', 'result': datetime(2016, 12, 16, 18, 30), },
+            # a unit token combined with the legacy colon suffix must still work
+            {'string': '+3d 10:', 'result': datetime(2017, 1, 4, 9, 0), },
         ]
         for c in cases:
             date, error = plaintask_dates.increase_date(c.get('view', None), region,
