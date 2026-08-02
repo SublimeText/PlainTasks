@@ -19,6 +19,11 @@
 			{ "key": "preceding_text", "operator": "regex_contains", "operand": "(@start(ed)?|@toggle|@created)(?!\\([\\d\\w,\\.:\\-\/ @]*\\))", "match_all": true }
 		]
 	},
+	{ "keys": ["tab"], "command": "plain_tasks_re_calculate_time_for_tasks", "context":
+		[
+			{ "key": "selector", "operator": "equal", "operand": "text.todo meta.tag.todo.completed, text.todo meta.tag.todo.cancelled" }
+		]
+	},
 	{ "keys": ["tab"], "command": "plain_tasks_replace_short_date", "context":
 		[
 			{ "key": "selection_empty", "operator": "equal", "operand": true, "match_all": true },
@@ -27,9 +32,4 @@
 			{ "key": "following_text", "operator": "regex_contains", "operand": "[ \t]*\\)", "match_all": true }
 		]
 	},
-	{ "keys": ["tab"], "command": "plain_tasks_re_calculate_time_for_tasks", "context":
-		[
-			{ "key": "selector", "operator": "equal", "operand": "text.todo meta.tag.todo.completed, text.todo meta.tag.todo.cancelled" }
-		]
-	}
 ]
