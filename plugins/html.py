@@ -1,7 +1,6 @@
 import os
 import re
 import tempfile
-
 from html import escape as html_escape
 
 import sublime

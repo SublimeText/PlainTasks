@@ -4,8 +4,7 @@ import json
 import locale
 import re
 from calendar import monthrange
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import sublime
 import sublime_plugin
@@ -18,19 +17,19 @@ except ImportError:
     dateutil_parser = None
 
 __all__ = [
-    "PlainTasksToggleHighlightPastDue",
-    "PlainTasksHLDue",
-    "PlainTasksFoldToDueTags",
-    "PlainTasksCalculateTotalTimeForProject",
-    "PlainTasksCalculateTimeForTask",
-    "PlainTasksReCalculateTimeForTasks",
     "PlainTaskInsertDate",
-    "PlainTasksReplaceShortDate",
-    "PlainTasksViewEventListener",
-    "PlainTasksPreviewShortDate",
-    "PlainTasksChooseDate",
+    "PlainTasksCalculateTimeForTask",
+    "PlainTasksCalculateTotalTimeForProject",
     "PlainTasksCalendar",
+    "PlainTasksChooseDate",
+    "PlainTasksFoldToDueTags",
+    "PlainTasksHLDue",
+    "PlainTasksPreviewShortDate",
+    "PlainTasksReCalculateTimeForTasks",
     "PlainTasksRemain",
+    "PlainTasksReplaceShortDate",
+    "PlainTasksToggleHighlightPastDue",
+    "PlainTasksViewEventListener",
     "plugin_unloaded"
 ]
 
