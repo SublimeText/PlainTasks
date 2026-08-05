@@ -191,20 +191,23 @@ def increase_date(view, region, text, now, date_format):
         if hm:
             units.add('m' if hm.group('minute') else 'h' if hm.group('hour') else 'd')
 
-        delta = error = None
+        result = error = None
         try:
-            delta = round_up(now + sign * timedelta(weeks=amounts['w'], days=amounts['d'],
-                                                    hours=amounts['h'] + hour,
-                                                    minutes=amounts['m'] + minute),
-                             units)
+            delta = timedelta(
+                weeks=amounts['w'],
+                days=amounts['d'],
+                hours=amounts['h'] + hour,
+                minutes=amounts['m'] + minute,
+            )
+            result = round_up(now + sign * delta, units)
         except (ValueError, OverflowError) as e:
             error = e, amounts['w'], amounts['d'], amounts['h'] + hour, amounts['m'] + minute
-        return delta, error
+        return result, error
 
     # no unit letters: bare number (== days) and/or a HH:MM / HH.MM suffix
     match_obj = re.search(r'''(?mx)
         (?:
-         (?P<number>\d*(?![:.]))\s*
+         (?P<days>\d*(?![:.]))\s*
          (?! \d*[:.])
         )?
         \s*
@@ -213,19 +216,21 @@ def increase_date(view, region, text, now, date_format):
          [:.]
          (?P<minute>\d*)
         )?''', rest)
-    number = int(match_obj.group('number') or 0)
+    assert match_obj  # cannot be `None` because an empty match is valid
+    days   = int(match_obj.group('days') or 0)
     hour   = int(match_obj.group('hour') or 0)
     minute = int(match_obj.group('minute') or 0)
-    if not (number or hour or minute):
-        # set 1 if number is omitted, i.e. @due(+) == @due(+1) == @due(+1d)
-        number = 1
+    if not (days or hour or minute):
+        # set 1 if days is omitted, i.e. @due(+) == @due(+1) == @due(+1d)
+        days = 1
     units = {'m' if match_obj.group('minute') else 'h' if match_obj.group('hour') else 'd'}
-    delta = error = None
+    result = error = None
     try:
-        delta = round_up(now + sign * timedelta(days=number, hours=hour, minutes=minute), units)
+        delta = timedelta(days=days, hours=hour, minutes=minute)
+        result = round_up(now + sign * delta, units)
     except (ValueError, OverflowError) as e:
-        error = e, number, hour, minute
-    return delta, error
+        error = e, days, hour, minute
+    return result, error
 
 
 def expand_short_date(view, start, end, now, date_format):
