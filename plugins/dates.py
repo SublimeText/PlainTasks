@@ -48,6 +48,34 @@ def is_dayfirst(date_format):
     return date_format.strip('(  )').startswith(('%d'))
 
 
+UNIT_RE = re.compile(r'(?P<number>\d*)\s*(?P<unit>[DdWwHhMm])(?![A-Za-z])')
+
+# from finest to coarsest; a week is rounded like a day, as day is the coarsest
+# unit we round to
+ROUNDING_UNITS = (
+    ('m', timedelta(minutes=1), dict(second=0, microsecond=0)),
+    ('h', timedelta(hours=1), dict(minute=0, second=0, microsecond=0)),
+    ('d', timedelta(days=1), dict(hour=0, minute=0, second=0, microsecond=0)),
+)
+
+
+def is_relative(text):
+    return text.lstrip()[:1] in ('+', '-') or bool(UNIT_RE.search(text))
+
+
+def round_up(date, units):
+    '''Round date up to the next boundary of the finest unit in units
+
+    units
+        set of 'd', 'h' and/or 'm'; an empty set implies day precision
+    '''
+    unit, step, truncation = next(
+        (u for u in ROUNDING_UNITS if u[0] in units),
+        ROUNDING_UNITS[-1])  # day is the default precision
+    truncated = date.replace(**truncation)
+    return truncated if truncated == date else truncated + step
+
+
 def _convert_date(matchstr, now):
     match_obj = re.search(r'''(?mx)
         (?:\s*
@@ -112,8 +140,16 @@ def convert_date(matchstr, now):
 
 
 def increase_date(view, region, text, now, date_format):
+    lead = re.match(r'''(?x)
+        \s*
+        (?:(?P<relcreated>\+\+)|(?P<sign>[+-]))?
+        \s*
+    ''', text)
+    sign = -1 if lead.group('sign') == '-' else 1
+    rest = text[lead.end():]
+
     # relative from date of creation if any
-    if '++' in text:
+    if lead.group('relcreated'):
         line = view.line(region)
         line_content = view.substr(line)
         created = re.search(r'(?mx)@created\(([\d\w,\.:\-\/ @]*)\)', line_content)
@@ -130,12 +166,47 @@ def increase_date(view, region, text, now, date_format):
             else:
                 now = created_date
 
+    tokens = list(UNIT_RE.finditer(rest))
+    if tokens:
+        # one or more "<number><unit>" components, e.g. @due(+1d 3h), @due(-2w 1d 4h 30m)
+        amounts = {'d': 0, 'w': 0, 'h': 0, 'm': 0}
+        units = set()
+        pos = 0
+        leftover_parts = []
+        for m in tokens:
+            unit = m.group('unit').lower()
+            amounts[unit] += int(m.group('number') or 1)
+            units.add('d' if unit == 'w' else unit)
+            leftover_parts.append(rest[pos:m.start()])
+            pos = m.end()
+        leftover_parts.append(rest[pos:])
+        leftover = ''.join(leftover_parts)
+
+        # a trailing HH:MM / HH.MM suffix must still combine with unit tokens,
+        # e.g. @due(+3d 10:) == 3 days and 10 hours
+        hm = re.search(r'(?mx)(?P<hour>\d*)[:.](?P<minute>\d*)', leftover)
+        hour = int(hm.group('hour') or 0) if hm else 0
+        minute = int(hm.group('minute') or 0) if hm else 0
+        if hm:
+            units.add('m' if hm.group('minute') else 'h' if hm.group('hour') else 'd')
+
+        result = error = None
+        try:
+            delta = timedelta(
+                weeks=amounts['w'],
+                days=amounts['d'],
+                hours=amounts['h'] + hour,
+                minutes=amounts['m'] + minute,
+            )
+            result = round_up(now + sign * delta, units)
+        except (ValueError, OverflowError) as e:
+            error = e, amounts['w'], amounts['d'], amounts['h'] + hour, amounts['m'] + minute
+        return result, error
+
+    # no unit letters: bare number (== days) and/or a HH:MM / HH.MM suffix
     match_obj = re.search(r'''(?mx)
-        \s*\+\+?\s*
         (?:
-         (?P<number>\d*(?![:.]))\s*
-         (?P<days>[Dd]?)
-         (?P<weeks>[Ww]?)
+         (?P<days>\d*(?![:.]))\s*
          (?! \d*[:.])
         )?
         \s*
@@ -143,24 +214,22 @@ def increase_date(view, region, text, now, date_format):
          (?P<hour>\d*)
          [:.]
          (?P<minute>\d*)
-        )?''', text)
-    number = int(match_obj.group('number') or 0)
-    days   = match_obj.group('days')
-    weeks  = match_obj.group('weeks')
+        )?''', rest)
+    assert match_obj  # cannot be `None` because an empty match is valid
+    days   = int(match_obj.group('days') or 0)
     hour   = int(match_obj.group('hour') or 0)
     minute = int(match_obj.group('minute') or 0)
-    if not (number or hour or minute) or (not number and (days or weeks)):
-        # set 1 if number is omitted, i.e.
-        #   @due(+) == @due(+1) == @due(+1d)
-        #   @due(+w) == @due(+1w)
-        number = 1
-    delta = error = None
-    amount = number * 7 if weeks else number
+    if not (days or hour or minute):
+        # set 1 if days is omitted, i.e. @due(+) == @due(+1) == @due(+1d)
+        days = 1
+    units = {'m' if match_obj.group('minute') else 'h' if match_obj.group('hour') else 'd'}
+    result = error = None
     try:
-        delta = now + timedelta(days=(amount), hours=hour, minutes=minute)
+        delta = timedelta(days=days, hours=hour, minutes=minute)
+        result = round_up(now + sign * delta, units)
     except (ValueError, OverflowError) as e:
-        error = e, amount, hour, minute
-    return delta, error
+        error = e, days, hour, minute
+    return result, error
 
 
 def expand_short_date(view, start, end, now, date_format):
@@ -172,7 +241,7 @@ def expand_short_date(view, start, end, now, date_format):
     text = view.substr(region)
     # print(text)
 
-    if '+' in text:
+    if is_relative(text):
         date, error = increase_date(view, region, text, now, date_format)
     else:
         date, error = parse_date(text,
@@ -285,7 +354,7 @@ class PlainTasksToggleHighlightPastDue(PlainTasksEnabled):
             if any(s in self.view.scope_name(region.a) for s in ('completed', 'cancelled')):
                 continue
             text = dates_strings[i]
-            if '+' in text:
+            if is_relative(text):
                 date, error = increase_date(self.view, region, text, default, date_format)
                 # print(date, date_format)
             else:
