@@ -488,12 +488,12 @@ class PlainTasksReCalculateTimeForTasks(PlainTasksEnabled):
 
             line_contents = self.view.substr(line)
 
-            done_match = re.match(done, line_contents, re.U)
+            done_match = re.match(done, line_contents)
             now = done_match.group(2) if done_match else default_now
 
-            started_matches = re.findall(started, line_contents, re.U)
-            toggle_matches = re.findall(toggle, line_contents, re.U)
-            calc_matches = re.findall(calculated, line_contents, re.U)
+            started_matches = re.findall(started, line_contents)
+            toggle_matches = re.findall(toggle, line_contents)
+            calc_matches = re.findall(calculated, line_contents)
 
             for match in calc_matches:
                 line_contents = line_contents.replace(match, '')

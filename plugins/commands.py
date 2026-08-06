@@ -164,11 +164,11 @@ class PlainTasksCompleteCommand(PlainTasksBase):
         regions = itertools.chain(*(reversed(self.view.lines(region)) for region in reversed(list(self.view.sel()))))
         for line in regions:
             line_contents = self.view.substr(line)
-            open_matches = re.match(rom, line_contents, re.U)
-            done_matches = re.match(rdm, line_contents, re.U)
-            canc_matches = re.match(rcm, line_contents, re.U)
-            started_matches = re.findall(started, line_contents, re.U)
-            toggle_matches = re.findall(toggle, line_contents, re.U)
+            open_matches = re.match(rom, line_contents)
+            done_matches = re.match(rdm, line_contents)
+            canc_matches = re.match(rcm, line_contents)
+            started_matches = re.findall(started, line_contents)
+            toggle_matches = re.findall(toggle, line_contents)
 
             done_line_end = done_line_end.rstrip()
             if line_contents.endswith('  '):
@@ -199,7 +199,7 @@ class PlainTasksCompleteCommand(PlainTasksBase):
                         'now': now,
                         'eol': line.end() + eol}
                 )
-                indent = re.match(r'^(\s*)\S', line_contents, re.U)
+                indent = re.match(r'^(\s*)\S', line_contents)
                 self.view.insert(edit, line.begin() + len(indent.group(1)), '%s ' % self.done_tasks_bullet)
                 self.view.run_command('plain_tasks_calculate_total_time_for_project', {'start': line.a})
             elif 'completed' in current_scope:
@@ -240,7 +240,7 @@ class PlainTasksInjectDueDateCommand(PlainTasksBase):
         for line in regions:
             line_contents = self.view.substr(line)
             current_scope = self.view.scope_name(line.begin())
-            due_matches = re.match(due_re, line_contents, re.U)
+            due_matches = re.match(due_re, line_contents)
             if ('item' in current_scope or 'header' in current_scope) and not due_matches:
                 self.view.insert(edit, line.end(), ' @due()')
                 point = line.end() + 6
@@ -289,14 +289,14 @@ class PlainTasksSortByDueDateAndPriorityCommand(PlainTasksBase):
                         first_task_indentation = indentation
 
                     task.due = '99-01-01 00:00'
-                    due_match = re.match(due_re, line_contents, re.U)
+                    due_match = re.match(due_re, line_contents)
                     if due_match is not None:
                         task.due = due_match.groups()[0]
 
                     task.priority = '3normal'
-                    critical_match = re.match(critical_re, line_contents, re.U)
-                    high_match = re.match(high_re, line_contents, re.U)
-                    low_match = re.match(low_re, line_contents, re.U)
+                    critical_match = re.match(critical_re, line_contents)
+                    high_match = re.match(high_re, line_contents)
+                    low_match = re.match(low_re, line_contents)
                     if critical_match is not None:
                         task.priority = '1critical'
                     elif high_match is not None:
@@ -330,11 +330,11 @@ class PlainTasksCancelCommand(PlainTasksBase):
         regions = itertools.chain(*(reversed(self.view.lines(region)) for region in reversed(list(self.view.sel()))))
         for line in regions:
             line_contents = self.view.substr(line)
-            open_matches = re.match(rom, line_contents, re.U)
-            done_matches = re.match(rdm, line_contents, re.U)
-            canc_matches = re.match(rcm, line_contents, re.U)
-            started_matches = re.findall(started, line_contents, re.U)
-            toggle_matches = re.findall(toggle, line_contents, re.U)
+            open_matches = re.match(rom, line_contents)
+            done_matches = re.match(rdm, line_contents)
+            canc_matches = re.match(rcm, line_contents)
+            started_matches = re.findall(started, line_contents)
+            toggle_matches = re.findall(toggle, line_contents)
 
             canc_line_end = canc_line_end.rstrip()
             if line_contents.endswith('  '):
@@ -367,7 +367,7 @@ class PlainTasksCancelCommand(PlainTasksBase):
                         'eol': line.end() + eol,
                         'tag': 'wasted'}
                 )
-                indent = re.match(r'^(\s*)\S', line_contents, re.U)
+                indent = re.match(r'^(\s*)\S', line_contents)
                 self.view.insert(edit, line.begin() + len(indent.group(1)), '%s ' % self.canc_tasks_bullet)
                 self.view.run_command('plain_tasks_calculate_total_time_for_project', {'start': line.a})
             elif 'completed' in current_scope:
@@ -421,7 +421,7 @@ class PlainTasksArchiveCommand(PlainTasksBase):
             # adding tasks to archive section
             for task in all_tasks:
                 line_content = self.view.substr(task)
-                match_task = re.match(r'^\s*(\[[x-]\]|.)(\s+.*$)', line_content, re.U)
+                match_task = re.match(r'^\s*(\[[x-]\]|.)(\s+.*$)', line_content)
                 current_scope = self.view.scope_name(task.a)
                 if rds in current_scope or rcs in current_scope:
                     pr = self.get_task_project(task, projects)
