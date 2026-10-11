@@ -16,9 +16,8 @@
 						"children":
 						[
 							{
-								"command": "open_file",
-								"args": {"file": "${packages}/PlainTasks/messages/Tutorial.todo"},
-								"caption": "Tutorial"
+								"caption": "Tutorial",
+								"command": "plain_tasks_open_tutorial"
 							},
 							{ "caption": "-" },
 							{

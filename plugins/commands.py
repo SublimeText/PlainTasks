@@ -31,6 +31,7 @@ __all__ = [
     "PlainTasksNewTaskDocCommand",
     "PlainTasksNewWithDateCommand",
     "PlainTasksOpenLinkCommand",
+    "PlainTasksOpenTutorialCommand",
     "PlainTasksOpenUrlCommand",
     "PlainTasksRemoveBold",
     "PlainTasksSortByDate",
@@ -1164,3 +1165,32 @@ class PlainTasksGotoTag(PlainTasksEnabled):
         self.view.sel().clear()
         self.view.sel().add(self.tags[index])
         self.view.show(self.tags[index], True)
+
+
+class PlainTasksOpenTutorialCommand(sublime_plugin.ApplicationCommand):
+    def run(self):
+        window = sublime.active_window()
+        if not window:
+            return
+
+        view = window.new_file()
+        view.set_name("PlainTasks Totorial")
+        view.set_scratch(True)
+        view.assign_syntax("PlainTasks.sublime-syntax")
+
+        text = sublime.load_resource("Packages/PlainTasks/messages/Tutorial.todo")
+        text = text.replace("\r\n", "\n").replace("\r", "\n")
+
+        # defaults must match the bullets used in Tutorial.todo
+        bullet_defaults = (
+            ("open_tasks_bullet", "□"),
+            ("cancelled_tasks_bullet", "×"),
+            ("done_tasks_bullet", "✓"),
+        )
+
+        for key, default in bullet_defaults:
+            bullet = view.settings().get(key, default)
+            if isinstance(bullet, str) and bullet != default:
+                text = text.replace(default, bullet)
+
+        view.run_command("append", {"characters": text})
