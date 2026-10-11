@@ -39,18 +39,27 @@ class PlainTasksBase(PlainTasksEnabled):
 
         settings = self.view.settings()
 
+        translate_tabs_to_spaces = settings.get('translate_tabs_to_spaces', False)
+
         self.taskpaper_compatible = settings.get('taskpaper_compatible', False)
         if self.taskpaper_compatible:
             self.open_tasks_bullet = self.done_tasks_bullet = self.canc_tasks_bullet = '-'
             self.before_date_space = ''
+            self.before_tasks_bullet_spaces = '\t'
         else:
             self.open_tasks_bullet = settings.get('open_tasks_bullet', '□')
             self.done_tasks_bullet = settings.get('done_tasks_bullet', '✓')
             self.canc_tasks_bullet = settings.get('cancelled_tasks_bullet', '×')
             self.before_date_space = settings.get('before_date_space', ' ')
 
-        translate_tabs_to_spaces = settings.get('translate_tabs_to_spaces', False)
-        self.before_tasks_bullet_spaces = ' ' * settings.get('tab_size', 2) if not self.taskpaper_compatible and translate_tabs_to_spaces else '\t'
+            if translate_tabs_to_spaces:
+                before_tasks_bullet_margin = settings.get('before_tasks_bullet_margin', 1)
+                if before_tasks_bullet_margin == "auto":
+                    before_tasks_bullet_margin = settings.get('tab_width', 2)
+                self.before_tasks_bullet_spaces = ' ' * before_tasks_bullet_margin
+            else:
+                self.before_tasks_bullet_spaces = '\t'
+
         self.tasks_bullet_space = settings.get('tasks_bullet_space', ' ' if self.taskpaper_compatible or translate_tabs_to_spaces else '\t')
 
         self.date_format = settings.get('date_format', '(%y-%m-%d %H:%M)')

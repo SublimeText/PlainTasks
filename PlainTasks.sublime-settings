@@ -21,6 +21,11 @@
 	// options: x | × | 🗙 | ✖ | ❌ | ❎ | ✘ | [-]
 	"cancelled_tasks_bullet": "×",
 
+	// Number of spaces to add in front of new tasks
+	// Valid only, if "taskpaper_compatible" is set false.
+	// If "auto" is set, "tab_width" is used.
+	"before_tasks_bullet_margin": 1,
+
 	// Space to insert after task bullets
 	// Defaults to single space or tab depending on "translate_tabs_to_spaces" setting.
 	// Valid only, if "taskpaper_compatible" is set false.
