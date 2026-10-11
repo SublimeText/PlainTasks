@@ -166,6 +166,7 @@ or go to `Main Menu → Preferences → Package Settings → PlainTasks → Sett
 |            Setting             |     Default      |                                 Options/Description
 | ------------------------------ | ---------------- | -----------------------------------------------------------------------
 | **taskpaper_compatible**       | false            | Enable taskpaper compatibility mode
+| **before_tasks_bullet_margin** | 1                | Determines the number of spaces (default indent) before the task bullet
 | **open_tasks_bullet**          | `□`              | `-` `❍` `■` `□` `☐` `🔳` `❑` `▪` `▫` `–` `—` `≡` `→` `›` `[ ]`
 | **done_tasks_bullet**          | `✓`              | `+` `🗸` `✓` `✔` `☑` `✅` `☑️` `√` `[x]`
 | **cancelled_tasks_bullet**     | `×`              | `x` `×` `🗙` `✖` `❌` `❎` `✘` `[-]`
